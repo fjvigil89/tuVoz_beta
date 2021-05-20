@@ -4,16 +4,25 @@ import {
   Image,
   StyleSheet,
   StatusBar,
-  Dimensions
+  Dimensions,  
 } from "react-native";
 import { Block, Button, Text, theme } from "galio-framework";
+import * as ImagePicker from 'expo-image-picker';
 
 const { height, width } = Dimensions.get("screen");
 
 import argonTheme from "../constants/Theme";
 import Images from "../constants/Images";
 
+
+const openImagePickerAsync = async() =>{
+  let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync()
+  console.log(permissionResult)
+}
+
+
 class Onboarding extends React.Component {
+
   render() {
     const { navigation } = this.props;
 
@@ -34,28 +43,29 @@ class Onboarding extends React.Component {
               <Block style={styles.title}>
                 <Block>
                   <Text color="white" size={60}>
-                    Design
+                    App
                   </Text>
                 </Block>
                 <Block>
                   <Text color="white" size={60}>
-                    System
+                    TuVoz
                   </Text>
                 </Block>
                 <Block style={styles.subTitle}>
                   <Text color="white" size={16}>
-                    Fully coded React Native components.
+                    Siempre pensando en Usted
                   </Text>
                 </Block>
               </Block>
-              <Block center>
+              <Block center>                
                 <Button
                   style={styles.button}
                   color={argonTheme.COLORS.SECONDARY}
-                  onPress={() => navigation.navigate("App")}
+                  //onPress={() => navigation.navigate("App")}
+                  //onPress = {openImagePickerAsync}
                   textStyle={{ color: argonTheme.COLORS.BLACK }}
                 >
-                  Get Started
+                  Demo
                 </Button>
               </Block>
           </Block>
