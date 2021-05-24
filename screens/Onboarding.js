@@ -9,6 +9,12 @@ import {
 import { Block, Button, Text, theme } from "galio-framework";
 //import * as ImagePicker from 'expo-image-picker';
 import { Audio } from 'expo-av';
+//import * as FileSystem from 'expo-file-system';
+
+
+import useBaseURL from '../Hooks/useBaseURL';
+import Cookies from 'universal-cookie';
+import axios from 'axios';
 
 const { height, width } = Dimensions.get("screen");
 
@@ -16,14 +22,19 @@ import argonTheme from "../constants/Theme";
 import Images from "../constants/Images";
 
 
+const cookie = new Cookies();
 
 const Onboarding = (props) => {
 
+  //uso del Hooks para la url de la API
+  const baseURL= useBaseURL(null);
+
 const [record, setRecord] = useState();
+const [shuldShowButomRecord, setShuldShowButomRecord] = useState(true);
 const recording = new Audio.Recording();
 
 const startRecording = async() =>{
-  let permissionResult = await Audio.requestPermissionsAsync();
+  let permissionResult = await Audio.getPermissionsAsync();
   if (permissionResult.status === "granted") {        
     try {      
       await Audio.setAudioModeAsync({
@@ -49,9 +60,35 @@ const stopRecording = async() => {
   console.log('Stopping recording..');  
   await record.stopAndUnloadAsync();
   const uri = record.getURI();   
-  console.log('Recording stopped and stored at', uri);
-  setRecord(undefined);    
+  console.log('Recording stopped and stored at', uri);        
+  
+  //hacer visible/oculto el boton de Grabar
+  setShuldShowButomRecord(!shuldShowButomRecord);
+  
+  
+  //storeRecordFile(record);
+  //setRecord(undefined);
+  
 }
+
+const storeRecordFile = async()=>{
+//baseURL+'api/storeRecordFile'  
+setRecord(undefined);
+setShuldShowButomRecord(!shuldShowButomRecord);
+
+}
+
+const lisentRecord = async()=>{
+  const soundObject = new Audio.Sound();
+  try {
+    await soundObject.loadAsync({ uri: record.getURI() /* url for your audio file */ });
+    soundObject.playAsync();
+  } catch (e) {
+    console.log('ERROR Loading Audio', e);
+  }
+
+}
+
   
  const { navigation } = props;
 
@@ -86,18 +123,43 @@ const stopRecording = async() => {
                   </Text>
                 </Block>
               </Block>
-              <Block center>                
-                <Button
-                  style={styles.button}
-                  color={argonTheme.COLORS.SECONDARY}
-                  //onPress={() => navigation.navigate("App")}                  
-                  textStyle={{ color: argonTheme.COLORS.BLACK }}                 
-                  onPress={record ? stopRecording : startRecording}
-                >        
-                 {record ? 'Stop Recording' : 'Start Recording'}          
-                </Button>
-                
-              </Block>
+              
+                { shuldShowButomRecord ? (
+                <Block center>
+                  <Button                  
+                    style={styles.button}
+                    color={argonTheme.COLORS.SECONDARY}
+                    //onPress={() => navigation.navigate("App")}                  
+                    textStyle={{ color: argonTheme.COLORS.BLACK }}                 
+                    onPress={record ? stopRecording : startRecording}
+                  >        
+                  {record ? 'Stop Recording' : 'Start Recording'}          
+                  </Button> 
+                </Block> ) : null
+                }
+              
+              { !shuldShowButomRecord ? (
+                <Block style= {styles.block_row}>
+                  <Button
+                    style={styles.button_lisent}
+                    color={argonTheme.COLORS.SECONDARY}
+                    //onPress={() => navigation.navigate("App")}                  
+                    textStyle={{ color: argonTheme.COLORS.BLACK }}   
+                    onPress={lisentRecord}                                
+                  >        
+                  Repriducir 
+                  </Button>
+                  
+                  <Button
+                    style={styles.button_lisent}
+                    color={argonTheme.COLORS.SECONDARY}
+                    onPress={storeRecordFile}                  
+                    textStyle={{ color: argonTheme.COLORS.BLACK }}                                  
+                  >        
+                  Guardar
+                  </Button>
+                </Block> ) : null
+              }
           </Block>
         </Block>
       </Block>
@@ -133,7 +195,18 @@ const styles = StyleSheet.create({
   },
   subTitle: {
     marginTop: 20
+  },
+  button_lisent:{
+    width: width - theme.SIZES.BASE * 16,
+    height: theme.SIZES.BASE * 3,
+    shadowRadius: 0,
+    shadowOpacity: 0,
+    margin: 25
+  },
+  block_row:{    
+    flexDirection: "row",
   }
+
 });
 
 export default Onboarding;
