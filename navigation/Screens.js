@@ -10,6 +10,8 @@ import { Block } from "galio-framework";
 // screens
 import Home from "../screens/Home";
 import Onboarding from "../screens/Onboarding";
+import Demo from "../screens/Demo";
+import Login from "../screens/Login";
 import Pro from "../screens/Pro";
 import Profile from "../screens/Profile";
 import Register from "../screens/Register";
@@ -137,6 +139,21 @@ function ProfileStack(props) {
   );
 }
 
+export default function LoginStack(props) {
+  return (   
+    <Stack.Navigator mode="card" headerMode="none">
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        option={{
+          headerTransparent: true
+        }}
+      />
+     <Stack.Screen name="Demo" component={DemoStack} /> 
+    </Stack.Navigator>
+  );
+}
+
 function HomeStack(props) {
   return (
     <Stack.Navigator mode="card" headerMode="screen">
@@ -177,17 +194,17 @@ function HomeStack(props) {
   );
 }
 
-export default function OnboardingStack(props) {
+function DemoStack(props) {
   return (
     <Stack.Navigator mode="card" headerMode="none">
       <Stack.Screen
-        name="Onboarding"
-        component={Onboarding}
+        name="Demo"
+        component={Demo}
         option={{
           headerTransparent: true
         }}
       />
-      <Stack.Screen name="App" component={AppStack} />
+     <Stack.Screen name="App" component={AppStack} /> 
     </Stack.Navigator>
   );
 }

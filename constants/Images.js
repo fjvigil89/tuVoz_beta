@@ -9,6 +9,13 @@ const ArgonLogo = require("../assets/imgs/argonlogo.png");
 const iOSLogo = require("../assets/imgs/ios.png");
 const androidLogo = require("../assets/imgs/android.png");
 
+const recorder = require("../assets/icons/recorder.png");
+const pause = require("../assets/icons/pause.png");
+const play = require("../assets/icons/play.png");
+const stop = require("../assets/icons/stop.png");
+const send = require("../assets/icons/send.png");
+const trash = require("../assets/icons/trash.png");
+
 // internet imgs
 
 const ProfilePicture = 'https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?fit=crop&w=1650&q=80';
@@ -38,5 +45,12 @@ export default {
   Pro,
   ArgonLogo,
   iOSLogo,
-  androidLogo
+  androidLogo,
+
+  recorder,
+  pause,
+  play,
+  stop,
+  send,
+  trash,
 };
