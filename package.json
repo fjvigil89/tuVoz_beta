@@ -41,7 +41,7 @@
     "react-native-reanimated": "~2.1.0",
     "react-native-safe-area-context": "3.2.0",
     "react-native-screens": "~3.0.0",
-    "react-scripts": "^4.0.3",    
+    "react-scripts": "^4.0.3",
     "universal-cookie": "^4.0.4"
   },
   "devDependencies": {
