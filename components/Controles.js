@@ -7,13 +7,12 @@ import {
 } from "react-native";
 import { Block, theme } from "galio-framework";
 import { Audio } from 'expo-av';
-
-import useBaseURL from '../Hooks/useBaseURL';
-
-const { width } = Dimensions.get("screen");
-
 import { Images } from "../constants";
 
+import useBaseURL from '../Hooks/useBaseURL';
+import { Clock, startClock } from "react-native-reanimated";
+
+const { width } = Dimensions.get("screen");
 
 const Controles = (props) => {
 
@@ -64,7 +63,7 @@ const Controles = (props) => {
 
         //hacer visible/oculto el boton de Grabar
         setShuldShowButomRecord(!shuldShowButomRecord);
-
+        setshuldDeleteRecord(true);
         //setRecord(undefined);
     }
 
@@ -88,25 +87,29 @@ const Controles = (props) => {
         let name = uri.split('/')[11];
         let type = "audio/" + uriParts[uriParts.length - 1];
 
+        console.log(apiUrl);
         let formData = new FormData();
         formData.append('audio', {
             uri: uri,
             name: name,
             type
-        });
-
-        return await fetch(apiUrl, {
+        });        
+        await fetch(apiUrl, {
             method: 'POST',
             body: formData,
             header: {
                 'content-type': 'multipart/form-data',
+                'Access-Control-Allow-Origin':'*',
             },
         }).then(res => res.json())
             .catch(error => {
-                alert(error)                
+                console.log(error);
+                alert(error);
             })
             .then(response => {
+                console.log(response);
                 alert(response.message);
+                
             });
 
     }
@@ -116,7 +119,7 @@ const Controles = (props) => {
         try {
             await soundObject.loadAsync({ uri: record.getURI() });
             setstartRecord(!startRecord);
-            setshuldDeleteRecord(!shuldDeleteRecord);
+            setshuldDeleteRecord(true);
             soundObject.playAsync();
         } catch (e) {
             console.log('ERROR Loading Audio', e);
@@ -125,29 +128,31 @@ const Controles = (props) => {
     }
 
     const pauseRecord = async () => {
-        try {
-            // await soundObject.loadAsync({ uri: record.getURI()});           
-            // soundObject.pauseRecord();
+        try {                        
             setstartRecord(false);
         } catch (e) {
             console.log('ERROR Loading Audio', e);
         }
 
     }
-
+    
+    useEffect(() => {
+        //const timer = setTimeout(() => console.log("Hello, World!"), 1000);
+        //return () => startClock();        
+      },[]);
 
     const { navigation } = props;
 
     return (
         <Block flex space="between" style={styles.padded}>
             <Block flex space="around" style={{ zIndex: 2 }}>
-                <Block style={styles.block_row}>
+                <Block center style={styles.block_row}>
                     <Block style={styles.play_pause}>
                         {!shuldShowButomRecord ?
-                            <TouchableOpacity onPress={!startRecord ? lisentRecord : pauseRecord}>
+                            <TouchableOpacity onPress={lisentRecord}>
                                 <Image
                                     style={styles.play_pause}
-                                    source={!startRecord ? Images.play : Images.pause}
+                                    source={Images.play}
                                 />
                             </TouchableOpacity> : null
                         }
@@ -156,14 +161,14 @@ const Controles = (props) => {
                         {!shuldDeleteRecord ?
                             <TouchableOpacity onPress={record ? stopRecording : startRecording}>
                                 <Image
-                                    style={styles.recorder_stop}
+                                    style={styles.recorder}
                                     source={record ? Images.stop : Images.recorder}
                                 />
                             </TouchableOpacity>
                             :
                             <TouchableOpacity onPress={deleteRecordFile}>
                                 <Image
-                                    style={styles.recorder_stop}
+                                    style={styles.stop}
                                     source={Images.trash}
                                 />
                             </TouchableOpacity>
@@ -202,11 +207,20 @@ const styles = StyleSheet.create({
         shadowRadius: 0,
         shadowOpacity: 0
     },
-    recorder_stop: {
+    recorder: {
         width: 150,
         height: 150,
         margin: 20,
         marginLeft: 1,
+    },
+    stop: {
+        width: 80,
+        height: 80,
+        margin: 20,
+        marginTop: 100,
+        marginRight: 55,
+        marginLeft: 40,
+        
     },
     play_pause: {
         width: 80,
@@ -215,10 +229,10 @@ const styles = StyleSheet.create({
 
     },
     send: {
-        width: 80,
+        width: 70,
         height: 60,
         marginTop: 45,
-        marginLeft: -10
+        marginLeft: -5
     },
     block_row: {
         flexDirection: "row",
