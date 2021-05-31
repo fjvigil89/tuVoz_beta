@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     ImageBackground,
     Image,
@@ -9,16 +9,21 @@ import {
 import { Block, Button, Text, theme } from "galio-framework";
 import Controles from "../components/Controles";
 
-
 const { height, width } = Dimensions.get("screen");
 
 import { Images, argonTheme } from "../constants";
+
 
 
 const Demo = (props) => {
 
     const { navigation } = props;
 
+    useEffect(()=>{                            
+        //console.log(navigation);
+      },[]);
+   
+    
     return (
         <Block flex style={styles.container}>
             <StatusBar hidden />

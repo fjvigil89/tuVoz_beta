@@ -85,15 +85,16 @@ const Controles = (props) => {
         let apiUrl = baseURL + 'api/storeRecordFile';
         let uriParts = uri.split('.');
         let name = uri.split('/')[11];
-        let type = "audio/" + uriParts[uriParts.length - 1];
-
-        console.log(apiUrl);
+        let type = "audio/" + uriParts[uriParts.length - 1];        
+        let hash = name.split('recording')[1];
+        
         let formData = new FormData();
         formData.append('audio', {
             uri: uri,
-            name: name,
+            name: name,            
             type
         });        
+        formData.append('identificador', hash);
         await fetch(apiUrl, {
             method: 'POST',
             body: formData,
@@ -102,15 +103,16 @@ const Controles = (props) => {
                 'Access-Control-Allow-Origin':'*',
             },
         }).then(res => res.json())
-            .catch(error => {
-                console.log(error);
-                alert(error);
-            })
-            .then(response => {
+        .catch(error => {
+                 console.log(error);
+                // alert(error);
+        })
+        .then(response => {
                 console.log(response);
-                alert(response.message);
-                
-            });
+            // alert(response.message);
+            
+        });
+        
 
     }
 
