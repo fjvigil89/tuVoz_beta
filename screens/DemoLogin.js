@@ -52,14 +52,16 @@ const goDemo = async()=>{
   }).then(res => res.json())
   .catch(error => {
            //console.log(error);
-          // alert(error);
+           alert(error);
   })
   .then(response => {
-         // console.log(response);
-      // alert(response.message);
-       //
-          setIdentificador("");
-          navigation.navigate("Demo");    
+          //console.log(response);
+          if (response.status === 200) {
+            setIdentificador("");
+            navigation.navigate("Demo");                
+          }
+          //alert(response.message);
+          
   });     
   
 }

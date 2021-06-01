@@ -3,14 +3,15 @@ import {
     Image,
     StyleSheet,
     Dimensions,
-    TouchableOpacity
+    TouchableOpacity,
+    PermissionsAndroid
 } from "react-native";
 import { Block, theme } from "galio-framework";
 import { Audio } from 'expo-av';
 import { Images } from "../constants";
 
 import useBaseURL from '../Hooks/useBaseURL';
-import { Clock, startClock } from "react-native-reanimated";
+
 
 const { width } = Dimensions.get("screen");
 
@@ -28,14 +29,67 @@ const Controles = (props) => {
     const soundObject = new Audio.Sound();
 
 
+    const checkMicrophone = async () => {
+        const result = await PermissionsAndroid.check(            
+            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+            PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+        );
+        return result;
+    };
 
-    // useEffect = (() => {        
-    // }, []);
+    const requestRecorAudioPermission = async () => {
+        try {
+            const status = await checkMicrophone();
+            if (!status) {
+                if (Platform.OS === 'android') {
+                   
+                        const grants = await PermissionsAndroid.requestMultiple([
+                            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+                            PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+                        ], {
+                            title: "Necesarios!!",
+                            message:
+                                "la aplicación TuVoz necesita varios permisos" +
+                                "para que puedas tomar un audio increíble",
+                            //         buttonNeutral: "Pregúntame Luego",
+                            //         buttonNegative: "Cancelar",
+                            buttonPositive: "OK"
+                        });
+
+                        console.log('write external stroage', grants);
+
+                        if (
+                            grants['android.permission.WRITE_EXTERNAL_STORAGE'] ===
+                            PermissionsAndroid.RESULTS.GRANTED &&
+                            grants['android.permission.READ_EXTERNAL_STORAGE'] ===
+                            PermissionsAndroid.RESULTS.GRANTED &&
+                            grants['android.permission.RECORD_AUDIO'] ===
+                            PermissionsAndroid.RESULTS.GRANTED
+                        ) {
+                            console.log("Puedes usar la grabación de audio");
+                        } else {
+                            console.log("Todos los permisos fueron denegados");
+                            return;
+                        }
+                     
+                }
+            }
+
+        } catch (err) {
+            console.warn(err);
+            return;
+        }
+    };
 
     const startRecording = async () => {
 
-        const { status, expires, permissions } = await Audio.requestPermissionsAsync();        
-        if (status === "granted") {
+        // const { status, expires, permissions } = await Audio.requestPermissionsAsync();        
+        await requestRecorAudioPermission();
+        const status = await checkMicrophone();
+        //console.log(status);
+        if (status) {
             try {
                 await Audio.setAudioModeAsync({
                     allowsRecordingIOS: true,
@@ -85,34 +139,34 @@ const Controles = (props) => {
         let apiUrl = baseURL + 'api/storeRecordFile';
         let uriParts = uri.split('.');
         let name = uri.split('/')[11];
-        let type = "audio/" + uriParts[uriParts.length - 1];        
+        let type = "audio/" + uriParts[uriParts.length - 1];
         let hash = name.split('recording')[1];
-        
+
         let formData = new FormData();
         formData.append('audio', {
             uri: uri,
-            name: name,            
+            name: name,
             type
-        });        
+        });
         formData.append('identificador', hash);
         await fetch(apiUrl, {
             method: 'POST',
             body: formData,
             header: {
                 'content-type': 'multipart/form-data',
-                'Access-Control-Allow-Origin':'*',
+                'Access-Control-Allow-Origin': '*',
             },
         }).then(res => res.json())
-        .catch(error => {
-                 console.log(error);
-                // alert(error);
-        })
-        .then(response => {
+            .catch(error => {
+                console.log(error);
+                alert(error);
+            })
+            .then(response => {
                 console.log(response);
-            // alert(response.message);
-            
-        });
-        
+                alert(response.message);
+
+            });
+
 
     }
 
@@ -130,18 +184,18 @@ const Controles = (props) => {
     }
 
     const pauseRecord = async () => {
-        try {                        
+        try {
             setstartRecord(false);
         } catch (e) {
             console.log('ERROR Loading Audio', e);
         }
 
     }
-    
+
     useEffect(() => {
         //const timer = setTimeout(() => console.log("Hello, World!"), 1000);
         //return () => startClock();        
-      },[]);
+    }, []);
 
     const { navigation } = props;
 
@@ -222,7 +276,7 @@ const styles = StyleSheet.create({
         marginTop: 100,
         marginRight: 55,
         marginLeft: 40,
-        
+
     },
     play_pause: {
         width: 80,
