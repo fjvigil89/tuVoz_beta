@@ -83,9 +83,33 @@ const Controles = (props) => {
         }
     };
 
+        
     const startRecording = async () => {
 
-        // const { status, expires, permissions } = await Audio.requestPermissionsAsync();        
+        
+        let code =  {
+            isMeteringEnabled: true,
+            android: {
+              extension: '.flac',
+              outputFormat: Audio.RECORDING_OPTION_ANDROID_OUTPUT_FORMAT_WEBM,
+              audioEncoder: Audio.RECORDING_OPTION_ANDROID_AUDIO_ENCODER_AAC,
+              sampleRate: 44100,
+              numberOfChannels: 2,
+              bitRate: 128000,
+            },
+            ios: {
+              extension: '.caf',
+              audioQuality: Audio.RECORDING_OPTION_IOS_AUDIO_QUALITY_MAX,
+              sampleRate: 44100,
+              numberOfChannels: 2,
+              bitRate: 128000,
+              linearPCMBitDepth: 16,
+              linearPCMIsBigEndian: false,
+              linearPCMIsFloat: false,
+            },
+          };
+        
+          
         await requestRecorAudioPermission();
         const status = await checkMicrophone();
         //console.log(status);
@@ -96,7 +120,27 @@ const Controles = (props) => {
                     playsInSilentModeIOS: true,
                 });
 
-                await recording.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY);
+                await recording.prepareToRecordAsync({
+                    android: {
+                      extension: ".m4a",
+                      outputFormat: Audio.RECORDING_OPTION_ANDROID_OUTPUT_FORMAT_MPEG_4,
+                      audioEncoder: Audio.RECORDING_OPTION_ANDROID_AUDIO_ENCODER_AAC,
+                      sampleRate: 48000,
+                      numberOfChannels: 1,
+                      bitRate: 768000,
+                    },
+                    ios: {
+                      extension: ".m4a",                      
+                      audioQuality: Audio.RECORDING_OPTION_IOS_AUDIO_QUALITY_MAX,
+                      sampleRate: 48000,
+                      numberOfChannels: 1,
+                      bitRate: 768000,
+                      linearPCMBitDepth: 16,
+                      linearPCMIsBigEndian: false,
+                      linearPCMIsFloat: false,
+                      allowsRecordingIOS: true,
+                    },
+                  });
                 await recording.startAsync();
                 setRecord(recording);
 
@@ -135,6 +179,7 @@ const Controles = (props) => {
     }
 
     const uploadAudioAsync = async (uri) => {
+        
         //console.log("Uploading " + uri);
         let apiUrl = baseURL + 'api/storeRecordFile';
         let uriParts = uri.split('.');
