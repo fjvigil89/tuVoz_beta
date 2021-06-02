@@ -11,6 +11,7 @@ import { Audio } from 'expo-av';
 import { Images } from "../constants";
 
 import useBaseURL from '../Hooks/useBaseURL';
+import axios from "axios";
 
 
 const { width } = Dimensions.get("screen");
@@ -30,7 +31,7 @@ const Controles = (props) => {
 
 
     const checkMicrophone = async () => {
-        const result = await PermissionsAndroid.check(            
+        const result = await PermissionsAndroid.check(
             PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
             PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
             PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
@@ -43,37 +44,37 @@ const Controles = (props) => {
             const status = await checkMicrophone();
             if (!status) {
                 if (Platform.OS === 'android') {
-                   
-                        const grants = await PermissionsAndroid.requestMultiple([
-                            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-                            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-                            PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-                        ], {
-                            title: "Necesarios!!",
-                            message:
-                                "la aplicación TuVoz necesita varios permisos" +
-                                "para que puedas tomar un audio increíble",
-                            //         buttonNeutral: "Pregúntame Luego",
-                            //         buttonNegative: "Cancelar",
-                            buttonPositive: "OK"
-                        });
 
-                        console.log('write external stroage', grants);
+                    const grants = await PermissionsAndroid.requestMultiple([
+                        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+                        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+                    ], {
+                        title: "Necesarios!!",
+                        message:
+                            "la aplicación TuVoz necesita varios permisos" +
+                            "para que puedas tomar un audio increíble",
+                        //         buttonNeutral: "Pregúntame Luego",
+                        //         buttonNegative: "Cancelar",
+                        buttonPositive: "OK"
+                    });
 
-                        if (
-                            grants['android.permission.WRITE_EXTERNAL_STORAGE'] ===
-                            PermissionsAndroid.RESULTS.GRANTED &&
-                            grants['android.permission.READ_EXTERNAL_STORAGE'] ===
-                            PermissionsAndroid.RESULTS.GRANTED &&
-                            grants['android.permission.RECORD_AUDIO'] ===
-                            PermissionsAndroid.RESULTS.GRANTED
-                        ) {
-                            console.log("Puedes usar la grabación de audio");
-                        } else {
-                            console.log("Todos los permisos fueron denegados");
-                            return;
-                        }
-                     
+                    console.log('write external stroage', grants);
+
+                    if (
+                        grants['android.permission.WRITE_EXTERNAL_STORAGE'] ===
+                        PermissionsAndroid.RESULTS.GRANTED &&
+                        grants['android.permission.READ_EXTERNAL_STORAGE'] ===
+                        PermissionsAndroid.RESULTS.GRANTED &&
+                        grants['android.permission.RECORD_AUDIO'] ===
+                        PermissionsAndroid.RESULTS.GRANTED
+                    ) {
+                        console.log("Puedes usar la grabación de audio");
+                    } else {
+                        console.log("Todos los permisos fueron denegados");
+                        return;
+                    }
+
                 }
             }
 
@@ -83,33 +84,8 @@ const Controles = (props) => {
         }
     };
 
-        
-    const startRecording = async () => {
 
-        
-        let code =  {
-            isMeteringEnabled: true,
-            android: {
-              extension: '.flac',
-              outputFormat: Audio.RECORDING_OPTION_ANDROID_OUTPUT_FORMAT_WEBM,
-              audioEncoder: Audio.RECORDING_OPTION_ANDROID_AUDIO_ENCODER_AAC,
-              sampleRate: 44100,
-              numberOfChannels: 2,
-              bitRate: 128000,
-            },
-            ios: {
-              extension: '.caf',
-              audioQuality: Audio.RECORDING_OPTION_IOS_AUDIO_QUALITY_MAX,
-              sampleRate: 44100,
-              numberOfChannels: 2,
-              bitRate: 128000,
-              linearPCMBitDepth: 16,
-              linearPCMIsBigEndian: false,
-              linearPCMIsFloat: false,
-            },
-          };
-        
-          
+    const startRecording = async () => {
         await requestRecorAudioPermission();
         const status = await checkMicrophone();
         //console.log(status);
@@ -122,25 +98,25 @@ const Controles = (props) => {
 
                 await recording.prepareToRecordAsync({
                     android: {
-                      extension: ".m4a",
-                      outputFormat: Audio.RECORDING_OPTION_ANDROID_OUTPUT_FORMAT_MPEG_4,
-                      audioEncoder: Audio.RECORDING_OPTION_ANDROID_AUDIO_ENCODER_AAC,
-                      sampleRate: 48000,
-                      numberOfChannels: 1,
-                      bitRate: 768000,
+                        extension: ".m4a",
+                        outputFormat: Audio.RECORDING_OPTION_ANDROID_OUTPUT_FORMAT_MPEG_4,
+                        audioEncoder: Audio.RECORDING_OPTION_ANDROID_AUDIO_ENCODER_AAC,
+                        sampleRate: 48000,
+                        numberOfChannels: 1,
+                        bitRate: 768000,
                     },
                     ios: {
-                      extension: ".m4a",                      
-                      audioQuality: Audio.RECORDING_OPTION_IOS_AUDIO_QUALITY_MAX,
-                      sampleRate: 48000,
-                      numberOfChannels: 1,
-                      bitRate: 768000,
-                      linearPCMBitDepth: 16,
-                      linearPCMIsBigEndian: false,
-                      linearPCMIsFloat: false,
-                      allowsRecordingIOS: true,
+                        extension: ".m4a",
+                        audioQuality: Audio.RECORDING_OPTION_IOS_AUDIO_QUALITY_MAX,
+                        sampleRate: 48000,
+                        numberOfChannels: 1,
+                        bitRate: 768000,
+                        linearPCMBitDepth: 16,
+                        linearPCMIsBigEndian: false,
+                        linearPCMIsFloat: false,
+                        allowsRecordingIOS: true,
                     },
-                  });
+                });
                 await recording.startAsync();
                 setRecord(recording);
 
@@ -178,9 +154,7 @@ const Controles = (props) => {
         setstartRecord(false);
     }
 
-    const uploadAudioAsync = async (uri) => {
-        alert(baseURL);
-        //console.log("Uploading " + uri);
+    const uploadAudioAsync = async (uri) => {        
         let apiUrl = baseURL + 'api/storeRecordFile';
         let uriParts = uri.split('.');
         let name = uri.split('/')[11];
@@ -212,6 +186,14 @@ const Controles = (props) => {
 
             });
 
+        
+        // await axios.post(apiUrl,formData).then(response => {
+        //     //alert(response);
+        //     console.log(response.message);
+        // }).catch(err=>{
+        //     //alert(err);
+        //     console.log(err);
+        // });
 
     }
 

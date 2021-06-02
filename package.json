@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/creativetimofficial/argon-react-native.git"
+    "url": "git@gitlab.com:frankjosue.vigilvega/tuvoz_movil.git"
   },
   "dependencies": {
     "@react-native-community/masked-view": "0.1.10",
@@ -34,7 +34,7 @@
     "react": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-41.0.0.tar.gz",
     "react-native-config": "^1.4.2",
-    "react-native-file-access": "^1.6.1",
+    "react-native-file-access": "^1.7.0",
     "react-native-fs": "^2.18.0",
     "react-native-gesture-handler": "~1.10.2",
     "react-native-modal-dropdown": "git+https://github.com/siemiatj/react-native-modal-dropdown.git",
@@ -48,27 +48,12 @@
     "babel-preset-expo": "8.3.0"
   },
   "keywords": [
-    "argon react native",
-    "argon design system",
-    "argon app react native",
-    "argon iOS",
-    "react native iOS",
-    "creative tim",
-    "argon Android",
-    "react native ui kit",
-    "react native expo",
-    "freebie",
-    "react native argon design",
-    "react native galio",
-    "galio argon free",
-    "galio react native free app",
-    "argon expo react native",
-    "react native ui template"
+    "tu voz"
   ],
-  "author": "Creative Tim <hello@creative-tim.com> (https://www.creative-tim.com/)",
-  "license": "MIT",
+  "author": "Creative frank.vigil",
+  "license": "DOC",
   "bugs": {
-    "url": "https://github.com/creativetimofficial/argon-react-native/issues"
+    "url": "https://gitlab.com/frankjosue.vigilvega/tuvoz_movil"
   },
-  "homepage": "https://demos.creative-tim.com/argon-react-native"
+  "homepage": "http://155.210.153.12/"
 }
