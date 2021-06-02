@@ -179,7 +179,7 @@ const Controles = (props) => {
     }
 
     const uploadAudioAsync = async (uri) => {
-        
+        alert(baseURL);
         //console.log("Uploading " + uri);
         let apiUrl = baseURL + 'api/storeRecordFile';
         let uriParts = uri.split('.');
