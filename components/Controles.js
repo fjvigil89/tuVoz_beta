@@ -4,14 +4,17 @@ import {
     StyleSheet,
     Dimensions,
     TouchableOpacity,
-    PermissionsAndroid
+    PermissionsAndroid,
+    Platform
 } from "react-native";
 import { Block, theme } from "galio-framework";
 import { Audio } from 'expo-av';
+
+
 import { Images } from "../constants";
 
 import useBaseURL from '../Hooks/useBaseURL';
-import axios from "axios";
+
 
 
 const { width } = Dimensions.get("screen");
@@ -30,18 +33,19 @@ const Controles = (props) => {
     const soundObject = new Audio.Sound();
 
 
-    const checkMicrophone = async () => {
+    const isCheckMicrophone = async () => {
         const result = await PermissionsAndroid.check(
             PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
             PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
             PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+            
         );
         return result;
     };
 
     const requestRecorAudioPermission = async () => {
-        try {
-            const status = await checkMicrophone();
+        try {            
+            const status = await isCheckMicrophone();             
             if (!status) {
                 if (Platform.OS === 'android') {
 
@@ -49,6 +53,8 @@ const Controles = (props) => {
                         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
                         PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
                         PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+                        
+                        
                     ], {
                         title: "Necesarios!!",
                         message:
@@ -67,7 +73,7 @@ const Controles = (props) => {
                         grants['android.permission.READ_EXTERNAL_STORAGE'] ===
                         PermissionsAndroid.RESULTS.GRANTED &&
                         grants['android.permission.RECORD_AUDIO'] ===
-                        PermissionsAndroid.RESULTS.GRANTED
+                        PermissionsAndroid.RESULTS.GRANTED 
                     ) {
                         console.log("Puedes usar la grabación de audio");
                     } else {
@@ -86,15 +92,19 @@ const Controles = (props) => {
 
 
     const startRecording = async () => {
-        await requestRecorAudioPermission();
-        const status = await checkMicrophone();
-        //console.log(status);
-        if (status) {
+        const permissionResult  = await requestRecorAudioPermission();
+        const status            = await isCheckMicrophone();
+        const audiorequest      =  await Audio.requestPermissionsAsync();
+
+        
+        
+        if (status && audiorequest.granted) {
             try {
                 await Audio.setAudioModeAsync({
                     allowsRecordingIOS: true,
                     playsInSilentModeIOS: true,
                 });
+                
 
                 await recording.prepareToRecordAsync({
                     android: {
@@ -127,7 +137,7 @@ const Controles = (props) => {
         }
         else {
             console.log(permissionResult)
-        }
+        } 
 
     }
 
@@ -139,6 +149,9 @@ const Controles = (props) => {
         setShuldShowButomRecord(!shuldShowButomRecord);
         setshuldDeleteRecord(true);
         //setRecord(undefined);
+
+        alert(record.getURI());
+        
     }
 
     const storeRecordFile = async () => {
@@ -158,7 +171,7 @@ const Controles = (props) => {
         let apiUrl = baseURL + 'api/storeRecordFile';
         let uriParts = uri.split('.');
         let name = uri.split('/')[11];
-        let type = "audio/" + uriParts[uriParts.length - 1];
+        let type = "audio/x-" + uriParts[uriParts.length - 1];
         let hash = name.split('recording')[1];
 
         let formData = new FormData();
@@ -168,11 +181,12 @@ const Controles = (props) => {
             type
         });
         formData.append('identificador', hash);
+        
         await fetch(apiUrl, {
             method: 'POST',
             body: formData,
             header: {
-                'content-type': 'multipart/form-data',
+                'Content-Type': 'multipart/form-data',
                 'Access-Control-Allow-Origin': '*',
             },
         }).then(res => res.json())

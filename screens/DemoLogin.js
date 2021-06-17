@@ -36,9 +36,9 @@ const DemoLogin = (props) => {
     setIdentificador(id);  
 }
 
-const goDemo = async()=>{                
+const goDemo = async()=>{          
     // Login...
-    let formData = new FormData();        
+   let formData = new FormData();        
     formData.append('email', "demo@unizar.es");
     formData.append('password', "demo");
     formData.append('identificador', identificador);
@@ -51,19 +51,19 @@ const goDemo = async()=>{
       },
   }).then(res => res.json())
   .catch(error => {
-           //console.log(error);
+           console.log(error);
            alert(error);
   })
   .then(response => {
-          //console.log(response);
+          //alert(response);
           if (response.status === 200) {
             setIdentificador("");
             navigation.navigate("Demo");                
           }
           //alert(response.message);
           
-  });     
-  
+  });    
+   
 }
 
 

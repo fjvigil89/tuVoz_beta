@@ -1,7 +1,7 @@
 {
-  "name": "argon-react-native",
+  "name": "tuvoz",
   "version": "1.7.0",
-  "description": "Argon React Native, based on Argon Design System. Coded by Creative Tim",
+  "description": "apk phd Agz ",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
@@ -21,7 +21,6 @@
     "@react-navigation/native": "5.9.3",
     "@react-navigation/stack": "5.14.3",
     "@use-expo/font": "^2.0.0",
-    "axios": "^0.21.1",
     "expo": "^41.0.1",
     "expo-app-loading": "^1.0.1",
     "expo-asset": "~8.3.1",
@@ -41,8 +40,7 @@
     "react-native-reanimated": "~2.1.0",
     "react-native-safe-area-context": "3.2.0",
     "react-native-screens": "~3.0.0",
-    "react-scripts": "^4.0.3",
-    "universal-cookie": "^4.0.4"
+    "react-scripts": "^4.0.3"
   },
   "devDependencies": {
     "babel-preset-expo": "8.3.0"
@@ -50,10 +48,10 @@
   "keywords": [
     "tu voz"
   ],
-  "author": "Creative frank.vigil",
+  "author": "PhD frank.vigil",
   "license": "DOC",
   "bugs": {
     "url": "https://gitlab.com/frankjosue.vigilvega/tuvoz_movil"
-  },
-  "homepage": "http://155.210.153.12/"
+  }
+  
 }
