@@ -16,7 +16,6 @@ import { Images, argonTheme } from "../constants";
 import { useState } from "react";
 
 import useBaseURL from '../Hooks/useBaseURL';
-import axios from "axios";
 
 
 const { width, height } = Dimensions.get("screen");
