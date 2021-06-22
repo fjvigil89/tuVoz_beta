@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
     Image,
     StyleSheet,
@@ -11,8 +11,7 @@ import { Audio } from 'expo-av';
 import { Images } from "../constants";
 
 import useBaseURL from '../Hooks/useBaseURL';
-import axios from "axios";
-
+import * as MediaLibrary from 'expo-media-library';
 
 const { width } = Dimensions.get("screen");
 
@@ -87,8 +86,9 @@ const Controles = (props) => {
 
     const startRecording = async () => {
         await requestRecorAudioPermission();
-        const status = await checkMicrophone();
-        //console.log(status);
+        await MediaLibrary.requestPermissionsAsync();
+        await Audio.requestPermissionsAsync();
+        const status = await checkMicrophone();        
         if (status) {
             try {
                 await Audio.setAudioModeAsync({
@@ -142,25 +142,27 @@ const Controles = (props) => {
     }
 
     const storeRecordFile = async () => {
+        const assets = await MediaLibrary.createAssetAsync(record.getURI());        
+        await uploadAudioAsync(assets.uri);
+        await deleteRecordFile(assets);
 
-        await uploadAudioAsync(record.getURI());
-        await deleteRecordFile();
 
     }
-    const deleteRecordFile = async () => {
+    const deleteRecordFile = async (assets) => {
         setRecord(undefined);
         setShuldShowButomRecord(!shuldShowButomRecord);
         setshuldDeleteRecord(false);
         setstartRecord(false);
+        await MediaLibrary.deleteAssetsAsync(assets);
     }
 
     const uploadAudioAsync = async (uri) => {        
         let apiUrl = baseURL + 'api/storeRecordFile';
         let uriParts = uri.split('.');
-        let name = uri.split('/')[11];
+        let name = uri.split('/')[7];
         let type = "audio/" + uriParts[uriParts.length - 1];
         let hash = name.split('recording')[1];
-
+        
         let formData = new FormData();
         formData.append('audio', {
             uri: uri,
@@ -186,15 +188,6 @@ const Controles = (props) => {
 
             });
 
-        
-        // await axios.post(apiUrl,formData).then(response => {
-        //     //alert(response);
-        //     console.log(response.message);
-        // }).catch(err=>{
-        //     //alert(err);
-        //     console.log(err);
-        // });
-
     }
 
 
@@ -219,10 +212,9 @@ const Controles = (props) => {
 
     }
 
-    useEffect(() => {
-        //const timer = setTimeout(() => console.log("Hello, World!"), 1000);
-        //return () => startClock();        
-    }, []);
+    // useEffect(() => {
+            
+    // }, []);
 
     const { navigation } = props;
 
