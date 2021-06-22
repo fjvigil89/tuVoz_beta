@@ -94,6 +94,11 @@ const Controles = (props) => {
                 await Audio.setAudioModeAsync({
                     allowsRecordingIOS: true,
                     playsInSilentModeIOS: true,
+                    interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+                    staysActiveInBackground: true,
+                    interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DUCK_OTHERS,
+                    shouldDuckAndroid: true,
+                    playThroughEarpieceAndroid: true,
                 });
 
                 await recording.prepareToRecordAsync({
