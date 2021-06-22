@@ -28,6 +28,7 @@
     "expo-file-system": "~11.0.2",
     "expo-font": "~9.1.0",
     "expo-image-picker": "~10.1.4",
+    "expo-media-library": "~12.0.2",
     "galio-framework": "^0.7.1",
     "mongoose": "^5.12.14",
     "prop-types": "^15.7.2",
@@ -35,15 +36,13 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-41.0.0.tar.gz",
     "react-native-audio-recorder-player": "^3.0.10",
     "react-native-config": "^1.4.2",
-    "react-native-file-access": "^1.7.0",
-    "react-native-fs": "^2.18.0",
+    "react-native-file-access": "^1.7.1",
     "react-native-gesture-handler": "~1.10.2",
     "react-native-modal-dropdown": "git+https://github.com/siemiatj/react-native-modal-dropdown.git",
     "react-native-reanimated": "~2.1.0",
     "react-native-safe-area-context": "3.2.0",
     "react-native-screens": "~3.0.0",
-    "react-scripts": "^4.0.3",
-    "rn-fetch-blob": "^0.12.0"
+    "react-scripts": "^4.0.3"
   },
   "devDependencies": {
     "babel-preset-expo": "8.3.0"

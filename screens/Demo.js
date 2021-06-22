@@ -9,8 +9,6 @@ import {
 import { Block, Button, Text, theme } from "galio-framework";
 import Controles from "../components/Controles";
 
-//import Controles from "../components/NewControles";
-
 const { height, width } = Dimensions.get("screen");
 
 import { Images, argonTheme } from "../constants";
