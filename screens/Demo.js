@@ -25,8 +25,7 @@ const Demo = (props) => {
    
     
     return (
-        <Block flex style={styles.container}>
-            <StatusBar hidden />
+        <Block flex style={styles.container}>            
             <Block flex center>
                 <ImageBackground
                     source={Images.Onboarding}
@@ -64,7 +63,7 @@ const styles = StyleSheet.create({
         height: 60,
         zIndex: 2,
         position: 'relative',
-        marginTop: '-50%'
+        marginTop: '-70%'
     },
     title: {
         marginTop: '-5%'

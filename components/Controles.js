@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Image,
     StyleSheet,
     Dimensions,
     TouchableOpacity,
-    PermissionsAndroid
+    PermissionsAndroid,
+    Text, 
+    
 } from "react-native";
+
 import { Block, theme } from "galio-framework";
 import { Audio } from 'expo-av';
 import { Images } from "../constants";
@@ -132,7 +135,7 @@ const Controles = (props) => {
         }
         else {
             console.log(permissionResult)
-        }
+        }        
 
     }
 
@@ -160,7 +163,6 @@ const Controles = (props) => {
         setstartRecord(false);
         await MediaLibrary.deleteAssetsAsync(assets);
     }
-
     const uploadAudioAsync = async (uri) => {        
         let apiUrl = baseURL + 'api/storeRecordFile';
         let uriParts = uri.split('.');
@@ -175,27 +177,26 @@ const Controles = (props) => {
             type
         });
         formData.append('identificador', hash);
-        await fetch(apiUrl, {
-            method: 'POST',
-            body: formData,
-            header: {
-                'content-type': 'multipart/form-data',
-                'Access-Control-Allow-Origin': '*',
-            },
-        }).then(res => res.json())
-            .catch(error => {
-                console.log(error);
-                alert(error);
-            })
-            .then(response => {
-                console.log(response);
-                alert(response.message);
+        // await fetch(apiUrl, {
+        //     method: 'POST',
+        //     body: formData,
+        //     header: {
+        //         'content-type': 'multipart/form-data',
+        //         'Access-Control-Allow-Origin': '*',
+        //     },
+        // }).then(res => res.json())
+        //     .catch(error => {
+        //         console.log(error);
+        //         alert(error);
+        //     })
+        //     .then(response => {
+        //         console.log(response);
+        //         alert(response.message);
 
-            });
+        //     });
+        handleNextPhrase();    
 
     }
-
-
     const lisentRecord = async () => {
         try {
             await soundObject.loadAsync({ uri: record.getURI() });
@@ -205,9 +206,7 @@ const Controles = (props) => {
         } catch (e) {
             console.log('ERROR Loading Audio', e);
         }
-
     }
-
     const pauseRecord = async () => {
         try {
             setstartRecord(false);
@@ -217,14 +216,45 @@ const Controles = (props) => {
 
     }
 
-    // useEffect(() => {
-            
-    // }, []);
+    
+    const phrase = [
+        {
+          name: 'Amy Farha dsfdsfdsf dsf dsfdsf dsf dsf dsf dsf dsfds fdsf dsfdsfsdf ',
+          status: 1,          
+        },
+        {
+          name: 'Chris Jackson',
+          status: 0,          
+        },
+       
+      ]
+    
+    const [current, setCurrent] = useState(phrase[0]);
+   
+    const handleNextPhrase = async () => {
+    
+        const aux = phrase.map((item, index) => {
+            if (item.status === current.status) {
+            setCurrent(phrase[index + 1]);
+            }          
+            return phrase[index + 1];
+        });
+    };
 
     const { navigation } = props;
+    useEffect(() => {
 
-    return (
+        console.log(navigation);
+      }, []);
+    
+    return current ? (
         <Block flex space="between" style={styles.padded}>
+            <Block flex={0.25} middle space="around" style={{ zIndex: 2 }}>
+                <Block justify>
+                <Text style={styles.subTitle}>{current.name} </Text>
+                </Block>
+            </Block>
+
             <Block flex space="around" style={{ zIndex: 2 }}>
                 <Block center style={styles.block_row}>
                     <Block style={styles.play_pause}>
@@ -267,7 +297,7 @@ const Controles = (props) => {
                 </Block>
             </Block>
         </Block>
-    );
+    ): null; 
 
 }
 
@@ -275,6 +305,13 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: theme.COLORS.BLACK
     },
+    subTitle: {        
+        width: 300,
+        height: 100,
+        color: "#fff",
+        fontSize: 25,
+        textAlign: "justify",
+      },    
     padded: {
         paddingHorizontal: theme.SIZES.BASE * 2,
         position: "relative",

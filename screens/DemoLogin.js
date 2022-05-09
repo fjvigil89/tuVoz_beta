@@ -6,7 +6,11 @@ import {
   StatusBar,
   KeyboardAvoidingView, 
   TextInput,
+  CheckBox,
+  View,
 } from "react-native";
+
+import { RadioButton } from 'react-native-paper';
 
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -29,133 +33,162 @@ const DemoLogin = (props) => {
   //uso del Hooks para la url de la API
   const baseURL= useBaseURL(null);
 
-  const [identificador, setIdentificador]= useState("");
+  const [item, setItem]= useState({
+    sexo:"M",
+    edad:0,
+    diagnostico:["logo"],
+  });
 
-  const handleChange = async(id)=>{    
-    setIdentificador(id);  
-}
+  const handleSexo = async(sexo) =>{    
+    console.log(sexo);
+  }
 
-const goDemo = async()=>{          
-    // Login...
-   let formData = new FormData();        
-    formData.append('email', "demo@unizar.es");
-    formData.append('password', "demo");
-    formData.append('identificador', identificador);
-    await fetch(baseURL+'api/login', {
-      method: 'POST',
-      body: formData,
-      header: {
-          'content-type': 'multipart/form-data',
-          'Access-Control-Allow-Origin':'*',
-      },
-  }).then(res => res.json())
-  .catch(error => {
-           console.log(error);
-           alert(error);
-  })
-  .then(response => {
-          //alert(response);
-          if (response.status === 200) {
-            setIdentificador("");
-            navigation.navigate("Demo");                
-          }
-          //alert(response.message);
-          
-  });    
-   
-}
+  const goDemo = async()=>{              
+    console.log(item);
+    navigation.navigate("Demo");   
+  }
 
-
-    const { navigation } = props;
-    return (
-      <Block flex middle>
-        <StatusBar hidden />
-        <ImageBackground
-          source={Images.RegisterBackground}
-          style={{ width, height, zIndex: 1 }}
-        >
-          <Block safe flex middle>
-            <Block style={styles.registerContainer}>
-              <Block flex={0.25} middle style={styles.socialConnect}>
-                <Text color="#8898AA" size={12}>
-                  Sign in with
-                </Text>
-                <Block row style={{ marginTop: theme.SIZES.BASE }}>
-                  <Button style={{ ...styles.socialButtons, marginRight: 30 }}>
-                    <Block row>
-                      <Icon
-                        name="logo-github"
-                        family="Ionicon"
-                        size={14}
-                        color={"black"}
-                        style={{ marginTop: 2, marginRight: 5 }}
-                      />
-                      <Text style={styles.socialTextButtons}>GITHUB</Text>
-                    </Block>
-                  </Button>
-                  <Button style={styles.socialButtons}>
-                    <Block row>
-                      <Icon
-                        name="logo-google"
-                        family="Ionicon"
-                        size={14}
-                        color={"black"}
-                        style={{ marginTop: 2, marginRight: 5 }}
-                      />
-                      <Text style={styles.socialTextButtons}>GOOGLE</Text>
-                    </Block>
-                  </Button>
+  const { navigation } = props;
+  const [value, setValue] = useState('first');
+  return (   
+    <Block flex middle>
+    <StatusBar hidden />
+    <ImageBackground
+      source={Images.RegisterBackground}
+      style={{ width, height, zIndex: 1 }}
+    >
+      <Block safe flex middle>
+        <Block style={styles.registerContainer}>
+          <Block flex={0.25} middle style={styles.socialConnect}>
+            <Text color="#8898AA" size={12}>
+              Sign up with
+            </Text>
+            <Block row style={{ marginTop: theme.SIZES.BASE }}>
+              <Button style={{ ...styles.socialButtons, marginRight: 30 }}>
+                <Block row>
+                  <Icon
+                    name="logo-github"
+                    family="Ionicon"
+                    size={14}
+                    color={"black"}
+                    style={{ marginTop: 2, marginRight: 5 }}
+                  />
+                  <Text style={styles.socialTextButtons}>GITHUB</Text>
                 </Block>
-              </Block>
-              <Block flex>
-                <Block flex={0.17} middle>
-                  <Text color="#8898AA" size={12}>
-                    Or sign up the classic way
-                  </Text>
+              </Button>
+              <Button style={styles.socialButtons}>
+                <Block row>
+                  <Icon
+                    name="logo-google"
+                    family="Ionicon"
+                    size={14}
+                    color={"black"}
+                    style={{ marginTop: 2, marginRight: 5 }}
+                  />
+                  <Text style={styles.socialTextButtons}>GOOGLE</Text>
                 </Block>
-                <Block flex center>
-                  <KeyboardAvoidingView
-                    style={{ flex: 1 }}
-                    behavior="padding"
-                    enabled
-                  >                   
-                    <Block width={width * 0.8} style={{ marginBottom: 15 }}>
-                      <TextInput
-                        onChangeText={(identificador) => handleChange(identificador)}
-                        value={identificador}
-                        name="identificador"
-                        borderless
-                        placeholder="Identificador"
-                        iconContent={
-                          <Icon
-                            size={16}
-                            color={argonTheme.COLORS.ICON}
-                            name="ic_mail_24px"
-                            family="ArgonExtra"
-                            style={styles.inputIcons}
-                          />
-                        }
-                      />
-                    </Block>                                    
-                    <Block middle>
-                      <Button 
-                      color="info" 
-                      style={styles.createButton} 
-                      onPress={() => goDemo()}                     
-                      >
-                        <Text bold size={14} color={argonTheme.COLORS.WHITE}>
-                          Demo
-                        </Text>
-                      </Button>
-                    </Block>
-                  </KeyboardAvoidingView>
-                </Block>
-              </Block>
+              </Button>
             </Block>
           </Block>
-        </ImageBackground>
+          <Block flex>
+            <Block flex={0.17} middle>
+              <Text color="#8898AA" size={12}>
+                Or sign up the classic way
+              </Text>
+            </Block>
+            <Block flex center>
+              <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior="padding"
+                enabled
+              >
+                <Block row width={width * 0.75} style={{ marginBottom: 15 }}>
+                    <Text size={22} color={argonTheme.COLORS.PRIMARY}>
+                      Sexo:
+                      {" "}
+                    </Text>                    
+                  <Checkbox
+                    checkboxStyle={{
+                      borderWidth: 2
+                    }}
+                    color={argonTheme.COLORS.PRIMARY}
+                    label="Masculino"                                        
+                  />
+                    <Text size={16} color={argonTheme.COLORS.PRIMARY}>                      
+                      {" "}
+                    </Text>
+                   <Checkbox
+                    checkboxStyle={{
+                      borderWidth: 2
+                    }}
+                    color={argonTheme.COLORS.PRIMARY}
+                    label="Femenino"
+                  />
+                  
+                </Block>
+
+                <Block row width={width * 0.75} style={{ marginBottom: 15 }}>
+                  <Text size={22} color={argonTheme.COLORS.PRIMARY}>                                            
+                      Edad:
+                      {" "}
+                  </Text>
+                  <Input
+                    style = {{right: -70 }}
+                    borderless
+                    placeholder="Edad"
+                    iconContent={
+                      <Icon
+                        size={16}
+                        color={argonTheme.COLORS.ICON}
+                        name="hat-3"
+                        family="ArgonExtra"
+                        style={styles.inputIcons}
+                      />
+                    }
+                  />
+                </Block>
+                
+                <Block row width={width * 0.75} style={{ marginBottom: 15 }}>
+                  <Text size={22} color={argonTheme.COLORS.PRIMARY}>                                            
+                      Diagnóstico:
+                      {" "}
+                  </Text>
+                  <Input                    
+                    borderless
+                    placeholder="Diagnóstico"
+                    iconContent={
+                      <Icon
+                        size={16}
+                        color={argonTheme.COLORS.ICON}
+                        name="hat-3"
+                        family="ArgonExtra"
+                        style={styles.inputIcons}
+                      />
+                    }
+                  />
+                </Block>
+                
+                <Block middle>
+                 <Button 
+                    color="primary" 
+                    style={styles.createButton} 
+                    onPress={() => goDemo()}                     
+                    >
+                      <Text bold size={14} color={argonTheme.COLORS.WHITE}>
+                        Siguiente
+                      </Text>
+                  </Button>                 
+                </Block>
+              </KeyboardAvoidingView>
+            </Block>
+          </Block>
+        </Block>
       </Block>
-    );
+    </ImageBackground>
+  </Block>
+     
+         
+  );
   
 }
 
