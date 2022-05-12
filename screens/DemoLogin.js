@@ -11,6 +11,7 @@ import {
 } from "react-native";
 
 import { RadioButton } from 'react-native-paper';
+import * as SecureStore from "expo-secure-store";
 
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -33,26 +34,27 @@ const DemoLogin = (props) => {
   //uso del Hooks para la url de la API
   const baseURL= useBaseURL(null);
 
-  const [item, setItem]= useState({
-    sexo:"M",
-    edad:0,
-    diagnostico:["logo"],
-  });
-
-  const handleSexo = async(sexo) =>{    
-    console.log(sexo);
-  }
-
-  const goDemo = async()=>{              
-    console.log(item);
+  const [sexo, setSexo]= useState("Femenino")  
+  const [edad, setEdad]= useState("")
+  const [diagnostico, setDiagnostico]= useState("")
+  
+  const goDemo = async()=>{      
+    SecureStore.setItemAsync("metadata",  JSON.stringify(
+      {    
+        sexo: sexo,
+        edad: edad,
+        diagnostico: diagnostico,         
+      }
+    ));            
+    
     navigation.navigate("Demo");   
   }
 
   const { navigation } = props;
-  const [value, setValue] = useState('first');
+ 
   return (   
     <Block flex middle>
-    <StatusBar hidden />
+    
     <ImageBackground
       source={Images.RegisterBackground}
       style={{ width, height, zIndex: 1 }}
@@ -103,28 +105,16 @@ const DemoLogin = (props) => {
                 enabled
               >
                 <Block row width={width * 0.75} style={{ marginBottom: 15 }}>
-                    <Text size={22} color={argonTheme.COLORS.PRIMARY}>
-                      Sexo:
-                      {" "}
-                    </Text>                    
-                  <Checkbox
-                    checkboxStyle={{
-                      borderWidth: 2
-                    }}
-                    color={argonTheme.COLORS.PRIMARY}
-                    label="Masculino"                                        
-                  />
-                    <Text size={16} color={argonTheme.COLORS.PRIMARY}>                      
-                      {" "}
-                    </Text>
-                   <Checkbox
-                    checkboxStyle={{
-                      borderWidth: 2
-                    }}
-                    color={argonTheme.COLORS.PRIMARY}
-                    label="Femenino"
-                  />
-                  
+                  <RadioButton.Group onValueChange={newValue => setSexo(newValue)} value={sexo}>
+                    <View>
+                      <Text>Masculino</Text>
+                      <RadioButton value="Masculino" />
+                    </View>
+                    <View>
+                      <Text>Femenino</Text>
+                      <RadioButton value="Femenino" />
+                    </View>
+                  </RadioButton.Group>                  
                 </Block>
 
                 <Block row width={width * 0.75} style={{ marginBottom: 15 }}>
@@ -136,6 +126,8 @@ const DemoLogin = (props) => {
                     style = {{right: -70 }}
                     borderless
                     placeholder="Edad"
+                    name="edad"
+                    onChangeText={(edad) => setEdad(edad)}
                     iconContent={
                       <Icon
                         size={16}
@@ -156,6 +148,8 @@ const DemoLogin = (props) => {
                   <Input                    
                     borderless
                     placeholder="Diagnóstico"
+                    name="diagnostico"
+                    onChangeText={(diagnostico) => setDiagnostico(diagnostico)}
                     iconContent={
                       <Icon
                         size={16}

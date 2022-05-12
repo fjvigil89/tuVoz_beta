@@ -1,8 +1,9 @@
 {
   "expo": {
-    "name": "Tu Voz",
-    "slug": "tu-voz",
+    "name": "Tu Voz Beta",
+    "slug": "tuVoz-beta",
     "privacy": "public",
+    "owner": "frank.vigil",
     "platforms": [
       "ios",
       "android"

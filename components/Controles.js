@@ -16,6 +16,16 @@ import { Images } from "../constants";
 import useBaseURL from '../Hooks/useBaseURL';
 import * as MediaLibrary from 'expo-media-library';
 
+import AWS from 'aws-sdk';
+import * as SecureStore from "expo-secure-store";
+
+const s3Bucket= new AWS.S3({
+    accessKeyId:"AKIA4RAX6HMDBQ5MBKP7",
+    secretAccessKey:"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",
+    Bucket:"tuvoz-bucket",
+    signatureVersion:"v4",
+});
+
 const { width } = Dimensions.get("screen");
 
 const Controles = (props) => {
@@ -135,7 +145,7 @@ const Controles = (props) => {
         }
         else {
             console.log(permissionResult)
-        }        
+        }  
 
     }
 
@@ -150,12 +160,69 @@ const Controles = (props) => {
     }
 
     const storeRecordFile = async () => {
-        const assets = await MediaLibrary.createAssetAsync(record.getURI());        
-        await uploadAudioAsync(assets.uri);
+        const assets = await MediaLibrary.createAssetAsync(record.getURI());                
+        await s3upload(assets.uri);
         await deleteRecordFile(assets);
-
-
     }
+
+    const s3upload = async(uri)=>{        
+        let uriParts = uri.split('.');
+        let name = uri.split('/')[7];
+        let type = "audio/" + uriParts[uriParts.length - 1];
+        let hash = name.split('.')[0];
+        
+        s3_metadata(hash);
+        s3_audio(uri);
+    }
+
+    const s3_metadata = async(hash)=>{
+        let body = await SecureStore.getItemAsync("metadata");
+        const params={
+            Bucket:"tuvoz-bucket",
+            Key:hash+".json",
+            Body:body,            
+            ContentType: "json"
+        }
+        s3Bucket.upload(params,(err: any, data: any)=>{
+            if(err){
+                console.log("err",err);
+            }else{
+                console.log("data", data);
+            }
+        });
+        
+        
+    }
+    const s3_audio = async (uri) => {        
+        let uriParts = uri.split('.');
+        let name = uri.split('/')[7];
+        let type = "audio/" + uriParts[uriParts.length - 1];        
+        let hash = name.split('.')[0];
+
+        let formData = new FormData();
+        formData.append('audio', {
+            uri: uri,
+            name: name,
+            type
+        });
+        const params={
+            Bucket:"tuvoz-bucket",
+            Key:name,
+            Body:body,            
+            ContentType: type
+        }
+        s3Bucket.upload(params,(err: any, data: any)=>{
+            if(err){
+                console.log("err",err);
+            }else{
+                console.log("data", data);
+            }
+        });
+        //console.log(body);
+        handleNextPhrase();    
+        
+    }
+
     const deleteRecordFile = async (assets) => {
         setRecord(undefined);
         setShuldShowButomRecord(!shuldShowButomRecord);
@@ -163,40 +230,7 @@ const Controles = (props) => {
         setstartRecord(false);
         await MediaLibrary.deleteAssetsAsync(assets);
     }
-    const uploadAudioAsync = async (uri) => {        
-        let apiUrl = baseURL + 'api/storeRecordFile';
-        let uriParts = uri.split('.');
-        let name = uri.split('/')[7];
-        let type = "audio/" + uriParts[uriParts.length - 1];
-        let hash = name.split('recording')[1];
-        
-        let formData = new FormData();
-        formData.append('audio', {
-            uri: uri,
-            name: name,
-            type
-        });
-        formData.append('identificador', hash);
-        // await fetch(apiUrl, {
-        //     method: 'POST',
-        //     body: formData,
-        //     header: {
-        //         'content-type': 'multipart/form-data',
-        //         'Access-Control-Allow-Origin': '*',
-        //     },
-        // }).then(res => res.json())
-        //     .catch(error => {
-        //         console.log(error);
-        //         alert(error);
-        //     })
-        //     .then(response => {
-        //         console.log(response);
-        //         alert(response.message);
 
-        //     });
-        handleNextPhrase();    
-
-    }
     const lisentRecord = async () => {
         try {
             await soundObject.loadAsync({ uri: record.getURI() });
@@ -242,10 +276,6 @@ const Controles = (props) => {
     };
 
     const { navigation } = props;
-    useEffect(() => {
-
-        console.log(navigation);
-      }, []);
     
     return current ? (
         <Block flex space="between" style={styles.padded}>
