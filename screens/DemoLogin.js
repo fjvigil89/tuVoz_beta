@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 
-import { RadioButton } from 'react-native-paper';
+import { List, RadioButton } from 'react-native-paper';
 import * as SecureStore from "expo-secure-store";
 
 import { createStackNavigator } from "@react-navigation/stack";
@@ -52,6 +52,9 @@ const DemoLogin = (props) => {
 
   const { navigation } = props;
  
+  const [expanded, setExpanded] = useState(true);
+  const handlePress = () => setExpanded(!expanded);
+
   return (   
     <Block flex middle>
     
@@ -109,10 +112,12 @@ const DemoLogin = (props) => {
                     <View>
                       <Text>Masculino</Text>
                       <RadioButton value="Masculino" />
-                    </View>
-                    <View>
+
                       <Text>Femenino</Text>
                       <RadioButton value="Femenino" />
+                    </View>
+                    <View>
+                     
                     </View>
                   </RadioButton.Group>                  
                 </Block>
