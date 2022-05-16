@@ -107,28 +107,26 @@ const DemoLogin = (props) => {
                 behavior="padding"
                 enabled
               >
-                <Block row width={width * 0.75} style={{ marginBottom: 15 }}>
+                <Block row style={styles.radioButton}>
                   <RadioButton.Group onValueChange={newValue => setSexo(newValue)} value={sexo}>
-                    <View>
-                      <Text>Masculino</Text>
-                      <RadioButton value="Masculino" />
-
-                      <Text>Femenino</Text>
+                      <View >
+                      <Text size={16} color={argonTheme.COLORS.PRIMARY}>  Masculino</Text>
+                        <RadioButton value="Masculino" />
+                      </View>
+                    <View >
+                    <Text size={16} color={argonTheme.COLORS.PRIMARY}>  Femenino</Text>
                       <RadioButton value="Femenino" />
-                    </View>
-                    <View>
-                     
                     </View>
                   </RadioButton.Group>                  
                 </Block>
 
                 <Block row width={width * 0.75} style={{ marginBottom: 15 }}>
-                  <Text size={22} color={argonTheme.COLORS.PRIMARY}>                                            
+                  <Text size={16} color={argonTheme.COLORS.PRIMARY}>                                            
                       Edad:
                       {" "}
                   </Text>
                   <Input
-                    style = {{right: -70 }}
+                    style = {{right: -60 }}
                     borderless
                     placeholder="Edad"
                     name="edad"
@@ -146,11 +144,12 @@ const DemoLogin = (props) => {
                 </Block>
                 
                 <Block row width={width * 0.75} style={{ marginBottom: 15 }}>
-                  <Text size={22} color={argonTheme.COLORS.PRIMARY}>                                            
+                  <Text size={16} color={argonTheme.COLORS.PRIMARY}>                                            
                       Diagnóstico:
                       {" "}
                   </Text>
-                  <Input                    
+                  <Input     
+                    style = {{right: -10 }}               
                     borderless
                     placeholder="Diagnóstico"
                     name="diagnostico"
@@ -241,6 +240,10 @@ const styles = StyleSheet.create({
   createButton: {
     width: width * 0.5,
     marginTop: 25
+  },
+  radioButton:{
+      flex: 0,
+      flexDirection: 'row'   
   }
 });
 
