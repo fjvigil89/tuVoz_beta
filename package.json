@@ -31,13 +31,14 @@
     "expo-image-picker": "~10.1.4",
     "expo-media-library": "~12.0.2",
     "expo-modules-core": "^0.9.1",
-    "expo-secure-store": "^11.2.0",    
+    "expo-secure-store": "^11.2.0",
     "galio-framework": "^0.7.1",
     "mongoose": "^5.12.14",
     "prop-types": "^15.7.2",
     "react": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-41.0.0.tar.gz",
     "react-native-audio-recorder-player": "^3.0.10",
+    "react-native-autocomplete-dropdown": "^2.0.4",
     "react-native-config": "^1.4.2",
     "react-native-dotenv": "^3.3.1",
     "react-native-elements": "^3.4.2",
@@ -49,7 +50,8 @@
     "react-native-reanimated": "~2.1.0",
     "react-native-safe-area-context": "3.2.0",
     "react-native-screens": "~3.0.0",
-    "react-scripts": "^4.0.3"
+    "react-scripts": "^4.0.3",
+    "shortid": "^2.2.16"
   },
   "devDependencies": {
     "babel-preset-expo": "8.3.0"

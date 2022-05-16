@@ -1,14 +1,18 @@
-import React from "react";
+import React, {useState, Component} from "react";
 import {
   StyleSheet,
   ImageBackground,
   Dimensions,
   StatusBar,
   KeyboardAvoidingView, 
-  TextInput,
-  CheckBox,
+  TouchableOpacity,
+  SafeAreaView,
   View,
 } from "react-native";
+
+import {Ionicons} from "@expo/vector-icons";
+import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
+import shortid from "shortid";
 
 import { List, RadioButton } from 'react-native-paper';
 import * as SecureStore from "expo-secure-store";
@@ -18,9 +22,10 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { Block, Checkbox, Text, theme } from "galio-framework";
 import { Button, Icon, Input } from "../components";
 import { Images, argonTheme } from "../constants";
-import { useState } from "react";
+
 
 import useBaseURL from '../Hooks/useBaseURL';
+import { DynamoDBCustomizations } from "aws-sdk/lib/services/dynamodb";
 
 
 const { width, height } = Dimensions.get("screen");
@@ -29,7 +34,7 @@ const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 const DemoLogin = (props) => {
-
+  const { navigation } = props;
   
   //uso del Hooks para la url de la API
   const baseURL= useBaseURL(null);
@@ -37,23 +42,46 @@ const DemoLogin = (props) => {
   const [sexo, setSexo]= useState("Femenino")  
   const [edad, setEdad]= useState("")
   const [diagnostico, setDiagnostico]= useState("")
-  
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  const data = [
+    { id: '0', title: "Edema de Reinke"},
+    { id: '1', title:"Disfonía psicogenica"},
+    { id: '2', title:"Disfonía por tension muscular"},
+    { id: '3', title:"Disfonía por reflujo"},
+    { id: '4', title:"Disfonía de esfuerzo"},
+    { id: '5', title:"Disfonía espasmodica"},
+    { id: '6', title:"Nodulo en cuerda vocal"},
+    { id: '7', title:"Quiste en cuerda vocal"},
+    { id: '8', title:"Surcus en cuerda vocal"},
+    { id: '9', title:"Parálisis de cuerda vocal"},
+    { id: '10',title:"Papiloma"},
+    { id: '11',title:"Hiato"},
+    { id: '12',title:"Polipos"},
+    { id: '13',title:"Leocuplasia"},
+    { id: '14',title:"Laringitis Crónica"},
+    
+  ];
+  const autocompletes = [...Array(1).keys()];
+
   const goDemo = async()=>{      
     SecureStore.setItemAsync("metadata",  JSON.stringify(
       {    
         sexo: sexo,
         edad: edad,
-        diagnostico: diagnostico,         
+        diagnostico: diagnostico.title,         
       }
     ));            
     
     navigation.navigate("Demo");   
+    
   }
 
-  const { navigation } = props;
+  
  
   const [expanded, setExpanded] = useState(true);
   const handlePress = () => setExpanded(!expanded);
+
 
   return (   
     <Block flex middle>
@@ -107,16 +135,15 @@ const DemoLogin = (props) => {
                 behavior="padding"
                 enabled
               >
-                <Block row style={styles.radioButton}>
-                  <RadioButton.Group onValueChange={newValue => setSexo(newValue)} value={sexo}>
+                <Block row width={width * 0.75} style={{ marginBottom: 15 }}>
+                  <RadioButton.Group  onValueChange={newValue => setSexo(newValue)} value={sexo}>
                       <View >
-                      <Text size={16} color={argonTheme.COLORS.PRIMARY}>  Masculino</Text>
-                        <RadioButton value="Masculino" />
+                        <Text size={16} color={argonTheme.COLORS.PRIMARY}>  Masculino</Text>
+                          <RadioButton value="Masculino" />
+                    
+                        <Text size={16} color={argonTheme.COLORS.PRIMARY}>  Femenino</Text>
+                          <RadioButton value="Femenino" />
                       </View>
-                    <View >
-                    <Text size={16} color={argonTheme.COLORS.PRIMARY}>  Femenino</Text>
-                      <RadioButton value="Femenino" />
-                    </View>
                   </RadioButton.Group>                  
                 </Block>
 
@@ -131,6 +158,7 @@ const DemoLogin = (props) => {
                     placeholder="Edad"
                     name="edad"
                     onChangeText={(edad) => setEdad(edad)}
+                    keyboardType="numeric"
                     iconContent={
                       <Icon
                         size={16}
@@ -144,26 +172,31 @@ const DemoLogin = (props) => {
                 </Block>
                 
                 <Block row width={width * 0.75} style={{ marginBottom: 15 }}>
-                  <Text size={16} color={argonTheme.COLORS.PRIMARY}>                                            
-                      Diagnóstico:
-                      {" "}
-                  </Text>
-                  <Input     
-                    style = {{right: -10 }}               
-                    borderless
-                    placeholder="Diagnóstico"
-                    name="diagnostico"
-                    onChangeText={(diagnostico) => setDiagnostico(diagnostico)}
-                    iconContent={
-                      <Icon
-                        size={16}
-                        color={argonTheme.COLORS.ICON}
-                        name="hat-3"
-                        family="ArgonExtra"
-                        style={styles.inputIcons}
-                      />
-                    }
-                  />
+                    <Text size={16} color={argonTheme.COLORS.PRIMARY}>                                            
+                        Diagnóstico:
+                        {" "}
+                    </Text> 
+
+                    <AutocompleteDropdown
+                      clearOnFocus={false}
+                      closeOnBlur={true}
+                      closeOnSubmit={false}
+                      initialValue={{ id: '2' }} // or just '2'
+                      name="diagnostico"
+                      onSelectItem={(diagnostico)=>setDiagnostico(diagnostico)}
+                      dataSet={data}
+                      showClear={true}
+                      textInputProps={{
+                        placeholder: 'Diagnóstico ... ',
+                        autoCorrect: false,
+                        autoCapitalize: 'none',
+                        style: {
+                          color: 'black',
+                          paddingLeft: 18,
+                        },
+                      }}
+                    />
+
                 </Block>
                 
                 <Block middle>
@@ -191,6 +224,11 @@ const DemoLogin = (props) => {
 }
 
 const styles = StyleSheet.create({
+  plus: {
+    position: "absolute",
+    left: 15,
+    top: 10,
+  },
   registerContainer: {
     width: width * 0.9,
     height: height * 0.875,
@@ -239,7 +277,11 @@ const styles = StyleSheet.create({
   },
   createButton: {
     width: width * 0.5,
-    marginTop: 25
+    marginTop: 125,
+    flex: 1,
+    position: 'absolute',  
+    top: 0,
+    zIndex: 1
   },
   radioButton:{
       flex: 0,

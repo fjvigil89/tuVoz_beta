@@ -6,8 +6,11 @@ import {
     TouchableOpacity,
     PermissionsAndroid,
     Text, 
+    Button,
     
 } from "react-native";
+
+import { useNavigation } from '@react-navigation/native';
 
 import { Block, theme } from "galio-framework";
 import { Audio } from 'expo-av';
@@ -32,8 +35,9 @@ const { width } = Dimensions.get("screen");
 
 const Controles = (props) => {
 
+    //const { navigation } = props;
     //uso del Hooks para la url de la API
-    const baseURL = useBaseURL(null);
+    const navigation = useNavigation(); 
 
     const [record, setRecord] = useState();
     const [shuldShowButomRecord, setShuldShowButomRecord] = useState(true);
@@ -73,7 +77,7 @@ const Controles = (props) => {
                         buttonPositive: "OK"
                     });
 
-                    console.log('write external stroage', grants);
+                    //console.log('write external stroage', grants);
 
                     if (
                         grants['android.permission.WRITE_EXTERNAL_STORAGE'] ===
@@ -83,9 +87,9 @@ const Controles = (props) => {
                         grants['android.permission.RECORD_AUDIO'] ===
                         PermissionsAndroid.RESULTS.GRANTED
                     ) {
-                        console.log("Puedes usar la grabación de audio");
+                        //console.log("Puedes usar la grabación de audio");
                     } else {
-                        console.log("Todos los permisos fueron denegados");
+                        //console.log("Todos los permisos fueron denegados");
                         return;
                     }
 
@@ -100,6 +104,7 @@ const Controles = (props) => {
 
 
     const startRecording = async () => {
+
         await requestRecorAudioPermission();
         await MediaLibrary.requestPermissionsAsync();
         await Audio.requestPermissionsAsync();
@@ -146,13 +151,13 @@ const Controles = (props) => {
             }
         }
         else {
-            console.log(permissionResult)
+            //console.log(permissionResult)
         }  
 
     }
 
     const stopRecording = async () => {
-        console.log('Stopping recording..');
+        //console.log('Stopping recording..');
         await record.stopAndUnloadAsync();
 
         //hacer visible/oculto el boton de Grabar
@@ -187,9 +192,9 @@ const Controles = (props) => {
         }
         s3Bucket.upload(params,(err: any, data: any)=>{
             if(err){
-                console.log("err",err);
+                //console.log("err",err);
             }else{
-                console.log("data", data);
+                //console.log("data", data);
             }
         });
         
@@ -220,9 +225,9 @@ const Controles = (props) => {
         }
         s3Bucket.upload(params,(err: any, data: any)=>{
             if(err){
-                console.log("err",err);
+                //console.log("err",err);
             }else{
-                console.log("data", data);
+                //console.log("data", data);
             }
         });
         // //console.log(body);
@@ -1074,22 +1079,14 @@ const Controles = (props) => {
     const handleNextPhrase = async () => {
     
         const aux = phrase.map((item, index) => { 
-            console.log(item === current);                      
-            if (item == current) {
-                console.log("dentro", current);
+                              
+            if (item == current) {                
                 setCurrent(phrase[index + 1]);
             }                      
             return phrase[index + 1];
         });
-
-        //console.log(current);
     };
 
-    const { navigation } = props;
-    
-    useEffect(()=>{                            
-        
-      },[]);
     return current ? (
         <Block flex space="between" style={styles.padded}>
             <Block flex={0.25} middle space="around" style={{ zIndex: 2 }}>
@@ -1140,7 +1137,23 @@ const Controles = (props) => {
                 </Block>
             </Block>
         </Block>
-    ): null; 
+    ): 
+    (
+        <Block flex space="between" style={styles.padded}>
+            <Block flex={0.25} middle space="around" style={{ zIndex: 2 }}>
+                <Block justify>
+                <Text style={styles.subTitle}>{current} </Text>
+                </Block>
+            </Block>
+ 
+            <Block flex space="around" style={{ zIndex: 2 }}>
+                <Button
+                    onPress={() => navigation.navigate('DemoLogin')}
+                    title="Inicio"
+                />
+            </Block>
+        </Block>
+    ); 
 
 }
 
