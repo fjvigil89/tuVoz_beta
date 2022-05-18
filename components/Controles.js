@@ -168,7 +168,7 @@ const Controles = (props) => {
 
     const storeRecordFile = async () => {
         const assets = await MediaLibrary.createAssetAsync(record.getURI());  
-        console.log(assets);              
+        
         await s3upload(assets);
         await deleteRecordFile(assets);
     }
@@ -201,37 +201,28 @@ const Controles = (props) => {
         
         
     }
+    
     const s3_audio = async (assets) => {        
         let uriParts = assets.uri.split('.');
         let name = assets.filename;
         let type = assets.mediaType+"/" + uriParts[uriParts.length - 1];
         let hash = name.split('.')[0];
 
-        let formData = new FormData();
-        formData.append('audio', {
-            uri: assets.uri,
-            name: name,
-            type
-        });
-        
-        // send http request in a new thread (using native code)
-        
-        const body = new Blob([assets], {type: type});
-        
+        const resp = await fetch(assets.uri);
+        const body = await resp.blob();
         const params={
             Bucket:"tuvoz-bucket",
             Key:name,
-            Body:assets,            
+            Body:body,            
             ContentType: type
         }
-        s3Bucket.upload(params,(err: any, data: any)=>{
-            if(err){
-                //console.log("err",err);
-            }else{
-                //console.log("data", data);
-            }
-        });
-        // //console.log(body);
+               
+         
+        s3Bucket.upload(params, function(err, data) {
+            if (err) console.log("error",err); // an error occurred
+            else     console.log("successful",data);           // successful response
+          });
+        
         handleNextPhrase();    
         
     }

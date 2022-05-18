@@ -91,7 +91,7 @@ const DemoLogin = (props) => {
   }
 
   const handleDiagnostico = (item) => {
-    console.log(item);
+    //console.log(item);
     setDiagnostico(item);
     setSelectedItem(true);
   }
