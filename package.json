@@ -51,7 +51,8 @@
     "react-native-safe-area-context": "3.2.0",
     "react-native-screens": "~3.0.0",
     "react-scripts": "^4.0.3",
-    "shortid": "^2.2.16"
+    "shortid": "^2.2.16",
+    "expo-updates": "~0.5.4"
   },
   "devDependencies": {
     "babel-preset-expo": "8.3.0"

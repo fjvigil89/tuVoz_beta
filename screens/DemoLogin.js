@@ -1,4 +1,4 @@
-import React, {useState, Component} from "react";
+import React, {useState, Component, useEffect} from "react";
 import {
   StyleSheet,
   ImageBackground,
@@ -20,8 +20,9 @@ import * as SecureStore from "expo-secure-store";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { Block, Checkbox, Text, theme } from "galio-framework";
-import { Button, Icon, Input } from "../components";
+
 import { Images, argonTheme } from "../constants";
+import { Button, Select, Icon, Input, Header, Switch } from "../components/";
 
 
 import useBaseURL from '../Hooks/useBaseURL';
@@ -42,29 +43,39 @@ const DemoLogin = (props) => {
   const [sexo, setSexo]= useState("Femenino")  
   const [edad, setEdad]= useState("")
   const [diagnostico, setDiagnostico]= useState("")
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [otros, setOtros]= useState("")
+  const [selectedItem, setSelectedItem] = useState(false);
 
   const data = [
-    { id: '0', title: "Edema de Reinke"},
     { id: '1', title:"Disfonía psicogenica"},
-    { id: '2', title:"Disfonía por tension muscular"},
-    { id: '3', title:"Disfonía por reflujo"},
-    { id: '4', title:"Disfonía de esfuerzo"},
-    { id: '5', title:"Disfonía espasmodica"},
-    { id: '6', title:"Nodulo en cuerda vocal"},
-    { id: '7', title:"Quiste en cuerda vocal"},
-    { id: '8', title:"Surcus en cuerda vocal"},
-    { id: '9', title:"Parálisis de cuerda vocal"},
-    { id: '10',title:"Papiloma"},
-    { id: '11',title:"Hiato"},
-    { id: '12',title:"Polipos"},
-    { id: '13',title:"Leocuplasia"},
-    { id: '14',title:"Laringitis Crónica"},
-    
+    { id: '2', title:"Otros..."},
+    { id: '3', title:"Disfonía por tension muscular"},
+    { id: '4', title:"Disfonía por reflujo"},
+    { id: '5', title:"Disfonía de esfuerzo"},
+    { id: '6', title:"Disfonía espasmodica"},
+    { id: '7', title:"Nodulo en cuerda vocal"},
+    { id: '8', title:"Quiste en cuerda vocal"},
+    { id: '9', title:"Surcus en cuerda vocal"},
+    { id: '10', title:"Parálisis de cuerda vocal"},
+    { id: '11',title:"Papiloma"},
+    { id: '12',title:"Hiato"},
+    { id: '13',title:"Polipos"},
+    { id: '14',title:"Leocuplasia"},
+    { id: '15',title:"Laringitis Crónica"},
+    { id: '16',title:"Edema de Reinke"},
   ];
   const autocompletes = [...Array(1).keys()];
 
-  const goDemo = async()=>{      
+  const goDemo = async()=>{  
+    if( diagnostico.id ==="2")
+    {
+      diagnostico.title =otros;
+    } 
+    else{
+      diagnostico.title +=' ('+ otros+ ') ';
+    }
+    
+
     SecureStore.setItemAsync("metadata",  JSON.stringify(
       {    
         sexo: sexo,
@@ -72,16 +83,22 @@ const DemoLogin = (props) => {
         diagnostico: diagnostico.title,         
       }
     ));            
-    
+     
     navigation.navigate("Demo");   
+     
     
+    //console.log(await SecureStore.getItemAsync("metadata"));
   }
 
-  
- 
-  const [expanded, setExpanded] = useState(true);
-  const handlePress = () => setExpanded(!expanded);
+  const handleDiagnostico = (item) => {
+    console.log(item);
+    setDiagnostico(item);
+    setSelectedItem(true);
+  }
 
+  useEffect(()=>{                            
+    //document.getElementById("input1").value = "";
+  },[]);
 
   return (   
     <Block flex middle>
@@ -135,25 +152,27 @@ const DemoLogin = (props) => {
                 behavior="padding"
                 enabled
               >
-                <Block row width={width * 0.75} style={{ marginBottom: 15 }}>
-                  <RadioButton.Group  onValueChange={newValue => setSexo(newValue)} value={sexo}>
-                      <View >
-                        <Text size={16} color={argonTheme.COLORS.PRIMARY}>  Masculino</Text>
+                              
+                  <RadioButton.Group row  onValueChange={newValue => setSexo(newValue)} value={sexo}>
+                        <Block left>
+                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  Masculino</Text>
                           <RadioButton value="Masculino" />
-                    
-                        <Text size={16} color={argonTheme.COLORS.PRIMARY}>  Femenino</Text>
-                          <RadioButton value="Femenino" />
-                      </View>
-                  </RadioButton.Group>                  
-                </Block>
+                        </Block>
 
-                <Block row width={width * 0.75} style={{ marginBottom: 15 }}>
+                        <Block  right style={{ marginTop: -55, marginBottom: 15 }}>
+                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  Femenino</Text>
+                          <RadioButton value="Femenino" />
+                        </Block>  
+                  </RadioButton.Group>                  
+                
+
+                <Block  width={width * 0.75} style={{ marginBottom: 15 }}>
                   <Text size={16} color={argonTheme.COLORS.PRIMARY}>                                            
                       Edad:
                       {" "}
                   </Text>
                   <Input
-                    style = {{right: -60 }}
+                    id="edad"
                     borderless
                     placeholder="Edad"
                     name="edad"
@@ -171,22 +190,24 @@ const DemoLogin = (props) => {
                   />
                 </Block>
                 
-                <Block row width={width * 0.75} style={{ marginBottom: 15 }}>
+                <Block  width={width * 0.75} style={{ marginBottom: 15 }}>
                     <Text size={16} color={argonTheme.COLORS.PRIMARY}>                                            
                         Diagnóstico:
                         {" "}
                     </Text> 
 
                     <AutocompleteDropdown
+                      
                       clearOnFocus={false}
                       closeOnBlur={true}
                       closeOnSubmit={false}
                       initialValue={{ id: '2' }} // or just '2'
                       name="diagnostico"
-                      onSelectItem={(diagnostico)=>setDiagnostico(diagnostico)}
+                      onSelectItem={(diagnostico)=>handleDiagnostico(diagnostico)}
                       dataSet={data}
-                      showClear={true}
+                      showClear={false}
                       textInputProps={{
+                        id:"diagnostico",
                         placeholder: 'Diagnóstico ... ',
                         autoCorrect: false,
                         autoCapitalize: 'none',
@@ -198,6 +219,25 @@ const DemoLogin = (props) => {
                     />
 
                 </Block>
+
+                { selectedItem ? (
+                  <Block  width={width * 0.75} style={{ marginBottom: 15 }}>
+                      <Text size={16} color={argonTheme.COLORS.PRIMARY}>                                            
+                          Otros:
+                          {" "}
+                      </Text> 
+
+                      <Input
+                      id="otros"
+                     
+                      borderless
+                      placeholder="Otros"
+                      name="otros"
+                      onChangeText={(otros) => setOtros(otros)}
+                    />
+
+                  </Block>
+                ) : null }
                 
                 <Block middle>
                  <Button 
@@ -277,7 +317,7 @@ const styles = StyleSheet.create({
   },
   createButton: {
     width: width * 0.5,
-    marginTop: 125,
+    marginTop: 60,
     flex: 1,
     position: 'absolute',  
     top: 0,

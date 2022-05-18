@@ -167,19 +167,20 @@ const Controles = (props) => {
     }
 
     const storeRecordFile = async () => {
-        const assets = await MediaLibrary.createAssetAsync(record.getURI());                
-        await s3upload(assets.uri);
+        const assets = await MediaLibrary.createAssetAsync(record.getURI());  
+        console.log(assets);              
+        await s3upload(assets);
         await deleteRecordFile(assets);
     }
 
-    const s3upload = async(uri)=>{        
-        let uriParts = uri.split('.');
-        let name = uri.split('/')[7];
-        let type = "audio/" + uriParts[uriParts.length - 1];
+    const s3upload = async(assets)=>{        
+        let uriParts = assets.uri.split('.');
+        let name = assets.filename;
+        let type = assets.mediaType+"/" + uriParts[uriParts.length - 1];
         let hash = name.split('.')[0];
         
         s3_metadata(hash);
-        s3_audio(uri);
+        s3_audio(assets);
     }
 
     const s3_metadata = async(hash)=>{
@@ -200,27 +201,27 @@ const Controles = (props) => {
         
         
     }
-    const s3_audio = async (uri) => {        
-        let uriParts = uri.split('.');
-        let name = uri.split('/')[7];
-        let type = "audio/" + uriParts[uriParts.length - 1];        
+    const s3_audio = async (assets) => {        
+        let uriParts = assets.uri.split('.');
+        let name = assets.filename;
+        let type = assets.mediaType+"/" + uriParts[uriParts.length - 1];
         let hash = name.split('.')[0];
 
         let formData = new FormData();
         formData.append('audio', {
-            uri: uri,
+            uri: assets.uri,
             name: name,
             type
         });
         
         // send http request in a new thread (using native code)
         
-        const body = new Blob([uri], {type: type});
+        const body = new Blob([assets], {type: type});
         
         const params={
             Bucket:"tuvoz-bucket",
             Key:name,
-            Body:body,            
+            Body:assets,            
             ContentType: type
         }
         s3Bucket.upload(params,(err: any, data: any)=>{
