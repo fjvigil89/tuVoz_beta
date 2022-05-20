@@ -165,7 +165,9 @@ export default function DemoLoginStack(props) {
           headerTransparent: true
         }}
       />
-     <Stack.Screen name="Demo" component={DemoStack} /> 
+      <Stack.Screen name="Demo" component={DemoStack} /> 
+      <Drawer.Screen name="Elements" component={ElementsStack} />
+      
     </Stack.Navigator>
   );
 }
@@ -220,6 +222,8 @@ function DemoStack(props) {
         }}
       />
      <Stack.Screen name="App" component={AppStack} /> 
+     <Stack.Screen name="Demo" component={DemoStack} /> 
+     <Drawer.Screen name="Elements" component={ElementsStack} />
     </Stack.Navigator>
   );
 }

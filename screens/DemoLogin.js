@@ -10,10 +10,11 @@ import {
   View,
 } from "react-native";
 
-import {Ionicons} from "@expo/vector-icons";
+import Modal from 'react-native-modal';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 import shortid from "shortid";
 
+import base64 from 'react-native-base64'
 import { List, RadioButton } from 'react-native-paper';
 import * as SecureStore from "expo-secure-store";
 
@@ -37,11 +38,11 @@ const Drawer = createDrawerNavigator();
 const DemoLogin = (props) => {
   const { navigation } = props;
   
-  //uso del Hooks para la url de la API
-  const baseURL= useBaseURL(null);
+  const [visibleModal, setVisibleModal]= useState(null)  
 
   const [sexo, setSexo]= useState("Femenino")  
   const [edad, setEdad]= useState("")
+  const [dni, setDni]= useState("")
   const [diagnostico, setDiagnostico]= useState("")
   const [otros, setOtros]= useState("")
   const [selectedItem, setSelectedItem] = useState(false);
@@ -64,30 +65,51 @@ const DemoLogin = (props) => {
     { id: '15',title:"Laringitis Crónica"},
     { id: '16',title:"Edema de Reinke"},
   ];
-  const autocompletes = [...Array(1).keys()];
+  
+  const _renderButton = (text, onPress) => (
+    <TouchableOpacity onPress={onPress}>
+      <View style={styles.button} >
+        <Text>{text}</Text>
+      </View>
+    </TouchableOpacity>
+  );
 
-  const goDemo = async()=>{  
+  const _renderModalContent = () => (
+    <View style={styles.modalContent}>
+      <Text>Quiere agregar GRBAS!</Text>
+      {_renderButton('No', () => goDemo())}
+      {_renderButton('Si', () => goGRABAS())}
+    </View>
+  );
+
+  const goGRABAS = async()=>{ 
+    setVisibleModal(null);
+    navigation.navigate("Elements"); 
+   };
+  const goDemo = async()=>{
+    setVisibleModal(null);
     if( diagnostico.id ==="2")
     {
       diagnostico.title =otros;
     } 
     else{
       diagnostico.title +=' ('+ otros+ ') ';
-    }
-    
+    }    
 
     SecureStore.setItemAsync("metadata",  JSON.stringify(
-      {    
+      { 
+        date: new Date(),
+        dni:  base64.encode(dni),   
         sexo: sexo,
         edad: edad,
         diagnostico: diagnostico.title,         
       }
     ));            
      
-    navigation.navigate("Demo");   
+    //navigation.navigate("Demo");   
      
     
-    //console.log(await SecureStore.getItemAsync("metadata"));
+    console.log(await SecureStore.getItemAsync("metadata"));
   }
 
   const handleDiagnostico = (item) => {
@@ -102,18 +124,18 @@ const DemoLogin = (props) => {
 
   return (   
     <Block flex middle>
-    
-    <ImageBackground
-      source={Images.RegisterBackground}
-      style={{ width, height, zIndex: 1 }}
-    >
+      
+      <ImageBackground
+        source={Images.RegisterBackground}
+        style={{ width, height, zIndex: 1 }}
+      >
       <Block safe flex middle>
         <Block style={styles.registerContainer}>
           <Block flex={0.15} middle style={styles.socialConnect}>
             <Text color={argonTheme.COLORS.PRIMARY} size={22}>
               TuVoz
             </Text>
-           
+            
           </Block>
           <Block flex>
             <Block flex={0.07} middle>
@@ -124,7 +146,7 @@ const DemoLogin = (props) => {
                 behavior="padding"
                 enabled
               >
-                              
+                        
                   <RadioButton.Group row  onValueChange={newValue => setSexo(newValue)} value={sexo}>
                         <Block left>
                           <Text size={16} color={argonTheme.COLORS.PRIMARY}>  Masculino</Text>
@@ -137,6 +159,29 @@ const DemoLogin = (props) => {
                         </Block>  
                   </RadioButton.Group>                  
                 
+                  <Block  width={width * 0.75} style={{ marginBottom: 15 }}>
+                  <Text size={16} color={argonTheme.COLORS.PRIMARY}>                                            
+                      DNI:
+                      {" "}
+                  </Text>
+                  <Input
+                    id="dni"
+                    borderless
+                    placeholder="DNI"
+                    name="dni"
+                    onChangeText={(dni) => setDni(dni)}                    
+                    iconContent={
+                      <Icon
+                        size={16}
+                        color={argonTheme.COLORS.ICON}
+                        name="g-check"
+                        family="ArgonExtra"
+                        style={styles.inputIcons}
+                        
+                      />
+                    }
+                  />
+                  </Block>
 
                 <Block  width={width * 0.75} style={{ marginBottom: 15 }}>
                   <Text size={16} color={argonTheme.COLORS.PRIMARY}>                                            
@@ -201,7 +246,7 @@ const DemoLogin = (props) => {
 
                       <Input
                       id="otros"
-                     
+                      
                       borderless
                       placeholder="Otros"
                       name="otros"
@@ -212,21 +257,22 @@ const DemoLogin = (props) => {
                 ) : null }
                 
                 <Block middle>
-                 <Button 
-                    color="primary" 
-                    style={styles.createButton} 
-                    onPress={() => goDemo()}                     
-                    >
-                      <Text bold size={14} color={argonTheme.COLORS.WHITE}>
-                        Siguiente
-                      </Text>
-                  </Button>                 
+                  <View style={styles.createButton}>
+                    {_renderButton('Siguiente', () =>
+                      setVisibleModal(1)
+                    )}
+                    <Modal isVisible={visibleModal === 1}>
+                      {_renderModalContent()}
+                    </Modal>        
+                  </View>              
                 </Block>
               </KeyboardAvoidingView>
             </Block>
+            
           </Block>
         </Block>
       </Block>
+     
     </ImageBackground>
   </Block>
      
@@ -236,6 +282,27 @@ const DemoLogin = (props) => {
 }
 
 const styles = StyleSheet.create({
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  bottomModal: {
+    justifyContent: 'flex-end',
+    margin: 0,
+  },
+  button: {
+    backgroundColor: 'lightblue',
+    padding: 12,
+    margin: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+  },
   plus: {
     position: "absolute",
     left: 15,
