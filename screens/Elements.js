@@ -1,184 +1,264 @@
-import React from "react";
-import { ScrollView, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
-// Galio components
-import { Block, Text, Button as GaButton, theme } from "galio-framework";
-// Argon themed components
-import { argonTheme, tabs } from "../constants/";
+import React, {useState, Component, useEffect} from "react";
+import {
+  StyleSheet,
+  ImageBackground,
+  Dimensions,
+  StatusBar,
+  KeyboardAvoidingView, 
+  TouchableOpacity,
+  SafeAreaView,
+  View,
+} from "react-native";
+
+import Modal from 'react-native-modal';
+import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
+import shortid from "shortid";
+
+import base64 from 'react-native-base64'
+import { List, RadioButton } from 'react-native-paper';
+import * as SecureStore from "expo-secure-store";
+
+import { createStackNavigator } from "@react-navigation/stack";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import { Block, Checkbox, Text, theme } from "galio-framework";
+
+import { Images, argonTheme } from "../constants";
 import { Button, Select, Icon, Input, Header, Switch } from "../components/";
 
-const { width } = Dimensions.get("screen");
 
-class Elements extends React.Component {
+import useBaseURL from '../Hooks/useBaseURL';
+import { DynamoDBCustomizations } from "aws-sdk/lib/services/dynamodb";
+import Demo from "./Demo";
 
-  renderInputs = () => {
-    return (
-      <Block flex style={styles.group}>
-        <Text bold size={16} style={styles.title}>
-          Inputs
-        </Text>
-        <Block style={{ paddingHorizontal: theme.SIZES.BASE }}>
-          <Input right placeholder="Regular" iconContent={<Block />} />
-        </Block>
-        <Block style={{ paddingHorizontal: theme.SIZES.BASE }}>
-          <Input
-            right
-            placeholder="Regular Custom"
-            style={{
-              borderColor: argonTheme.COLORS.INFO,
-              borderRadius: 4,
-              backgroundColor: "#fff"
-            }}
-            iconContent={<Block />}
-          />
-        </Block>
-        <Block style={{ paddingHorizontal: theme.SIZES.BASE }}>
-          <Input
-            placeholder="Icon left"
-            iconContent={
-              <Icon
-                size={11}
-                style={{ marginRight: 10 }}
-                color={argonTheme.COLORS.ICON}
-                name="search-zoom-in"
-                family="ArgonExtra"
-              />
-            }
-          />
-        </Block>
-        <Block style={{ paddingHorizontal: theme.SIZES.BASE }}>
-          <Input
-            right
-            placeholder="Icon Right"
-            iconContent={
-              <Icon
-                size={11}
-                color={argonTheme.COLORS.ICON}
-                name="search-zoom-in"
-                family="ArgonExtra"
-              />
-            }
-          />
-        </Block>
-        <Block style={{ paddingHorizontal: theme.SIZES.BASE }}>
-          <Input
-            success
-            right
-            placeholder="Success"
-            iconContent={
-              <Block
-                middle
-                style={{
-                  width: 20,
-                  height: 20,
-                  borderRadius: 10,
-                  backgroundColor: argonTheme.COLORS.INPUT_SUCCESS
-                }}
-              >
-                <Icon
-                  size={11}
-                  color={argonTheme.COLORS.ICON}
-                  name="g-check"
-                  family="ArgonExtra"
-                />
-              </Block>
-            }
-          />
-        </Block>
-        <Block style={{ paddingHorizontal: theme.SIZES.BASE }}>
-          <Input
-            error
-            right
-            placeholder="Error Input"
-            iconContent={
-              <Block
-                middle
-                style={{
-                  width: 20,
-                  height: 20,
-                  borderRadius: 10,
-                  backgroundColor: argonTheme.COLORS.INPUT_ERROR
-                }}
-              >
-                <Icon
-                  size={11}
-                  color={argonTheme.COLORS.ICON}
-                  name="support"
-                  family="ArgonExtra"
-                />
-              </Block>
-            }
-          />
-        </Block>
-      </Block>
-    );
-  };
 
-  render() {
-    return (
-      <Block flex center>
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 30, width }}>
-          
-          {this.renderInputs()}
-        </ScrollView>
-      </Block>
-    );
+const { width, height } = Dimensions.get("screen");
+
+const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
+
+const Elements = (props) => {
+  const { navigation } = props;
+  
+  const [g, setG]= useState("0")  
+  const [r, setR]= useState("0")
+  const [b, setB]= useState("0")
+  const [a, setA]= useState("0")
+  const [s, setS]= useState("0")
+
+  const goDemo = async()=>{              
+    const data= JSON.parse(await SecureStore.getItemAsync("metadata"));
+    SecureStore.setItemAsync("metadata",  JSON.stringify(
+      { 
+        date: new Date(),
+        dni:  data.dni,   
+        sexo: data.sexo,
+        edad: data.edad,
+        diagnostico: data.diagnostico,
+        grbas:{
+          g: g,
+          r: r,
+          b: b,
+          a: a,
+          s: s
+        },
+
+      }
+    ));  
+    navigation.navigate("Demo");   
+    //console.log("meta",await SecureStore.getItemAsync("metadata"));
   }
+
+  return (   
+    <Block flex middle>
+      
+      <ImageBackground
+        source={Images.RegisterBackground}
+        style={{ width, height, zIndex: 1 }}
+      >
+      <Block safe flex middle>
+        <Block style={styles.registerContainer}>
+          <Block flex={0.15} middle style={styles.socialConnect}>
+            <Text color={argonTheme.COLORS.PRIMARY} size={22}>
+              GRBAS
+            </Text>
+            
+          </Block>
+          <Block flex>
+            <Block flex={0.07} middle>
+            </Block>
+            <Block flex center>
+              <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior="padding"
+                enabled
+              >
+                <Block  width={width * 0.75} style={{ marginBottom: 15 }}>                
+                  <RadioButton.Group row  onValueChange={newValue => setG(newValue)} value={g}>
+                      <Text>Quiere agregar G:</Text>
+                  
+                        <Block left>
+                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  0</Text>
+                          <RadioButton value="0" />
+                        </Block>
+                        <Block  center style={{ marginTop: -55, marginRight:85 }}>
+                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  1</Text>
+                          <RadioButton value="1" />
+                        </Block> 
+                        <Block  center style={{ marginTop: -55, marginRight:-85 }}>
+                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  2</Text>
+                          <RadioButton value="2" />
+                        </Block> 
+                        <Block  right style={{ marginTop: -60 }}>
+                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  3</Text>
+                          <RadioButton value="3" />
+                        </Block>  
+                  </RadioButton.Group>                  
+                </Block>  
+
+                 <Block  width={width * 0.75} style={{ marginBottom: 15 }}>                
+                  <RadioButton.Group row  onValueChange={newValue => setR(newValue)} value={r}>
+                  <Text>Quiere agregar R:</Text>
+                        <Block left>
+                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  0</Text>
+                          <RadioButton value="0" />
+                        </Block>
+                        <Block  center style={{ marginTop: -55, marginRight:85 }}>
+                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  1</Text>
+                          <RadioButton value="1" />
+                        </Block> 
+                        <Block  center style={{ marginTop: -55, marginRight:-85 }}>
+                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  2</Text>
+                          <RadioButton value="2" />
+                        </Block> 
+                        <Block  right style={{ marginTop: -60 }}>
+                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  3</Text>
+                          <RadioButton value="3" />
+                        </Block>  
+                  </RadioButton.Group>                  
+                </Block>   
+
+                 <Block  width={width * 0.75} style={{ marginBottom: 15 }}>                
+                  <RadioButton.Group row  onValueChange={newValue => setB(newValue)} value={b}>
+                  <Text>Quiere agregar B:</Text>
+                        <Block left>
+                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  0</Text>
+                          <RadioButton value="0" />
+                        </Block>
+                        <Block  center style={{ marginTop: -55, marginRight:85 }}>
+                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  1</Text>
+                          <RadioButton value="1" />
+                        </Block> 
+                        <Block  center style={{ marginTop: -55, marginRight:-85 }}>
+                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  2</Text>
+                          <RadioButton value="2" />
+                        </Block> 
+                        <Block  right style={{ marginTop: -60 }}>
+                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  3</Text>
+                          <RadioButton value="3" />
+                        </Block>  
+                  </RadioButton.Group>                  
+                </Block> 
+
+                 <Block  width={width * 0.75} style={{ marginBottom: 15 }}>                
+                  <RadioButton.Group row  onValueChange={newValue => setA(newValue)} value={a}>
+                  <Text>Quiere agregar A:</Text>
+                        <Block left>
+                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  0</Text>
+                          <RadioButton value="0" />
+                        </Block>
+                        <Block  center style={{ marginTop: -55, marginRight:85 }}>
+                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  1</Text>
+                          <RadioButton value="1" />
+                        </Block> 
+                        <Block  center style={{ marginTop: -55, marginRight:-85 }}>
+                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  2</Text>
+                          <RadioButton value="2" />
+                        </Block> 
+                        <Block  right style={{ marginTop: -60 }}>
+                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  3</Text>
+                          <RadioButton value="3" />
+                        </Block>  
+                  </RadioButton.Group>                  
+                </Block> 
+
+                <Block  width={width * 0.75} style={{ marginBottom: 15 }}>                
+                  <RadioButton.Group row  onValueChange={newValue => setS(newValue)} value={s}>
+                  <Text>Quiere agregar S: </Text>
+                        <Block left>
+                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  0</Text>
+                          <RadioButton value="0" />
+                        </Block>
+                        <Block  center style={{ marginTop: -55, marginRight:85 }}>
+                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  1</Text>
+                          <RadioButton value="1" />
+                        </Block> 
+                        <Block  center style={{ marginTop: -55, marginRight:-85 }}>
+                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  2</Text>
+                          <RadioButton value="2" />
+                        </Block> 
+                        <Block  right style={{ marginTop: -60 }}>
+                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  3</Text>
+                          <RadioButton value="3" />
+                        </Block>  
+                  </RadioButton.Group>                  
+                </Block>                 
+ 
+                <Block middle>
+                <Button 
+                    color="primary" 
+                    style={styles.createButton} 
+                    onPress={()=>goDemo()}                     
+                    >
+                      <Text bold size={14} color={argonTheme.COLORS.WHITE}>
+                        Siguiente
+                      </Text>
+                  </Button>               
+                </Block>
+              </KeyboardAvoidingView>
+            </Block>
+            
+          </Block>
+        </Block>
+      </Block>
+     
+    </ImageBackground>
+  </Block>
+     
+         
+  );
+  
 }
 
-const styles = StyleSheet.create({
-  title: {
-    paddingBottom: theme.SIZES.BASE,
-    paddingHorizontal: theme.SIZES.BASE * 2,
-    marginTop: 44,
-    color: argonTheme.COLORS.HEADER
+const styles = StyleSheet.create({ 
+  plus: {
+    position: "absolute",
+    left: 15,
+    top: 10,
   },
-  group: {
-    paddingTop: theme.SIZES.BASE * 2
+  registerContainer: {
+    width: width * 0.9,
+    height: height * 0.875,
+    backgroundColor: "#F4F5F7",
+    borderRadius: 4,
+    shadowColor: argonTheme.COLORS.BLACK,
+    shadowOffset: {
+      width: 0,
+      height: 4
+    },
+    shadowRadius: 8,
+    shadowOpacity: 0.1,
+    elevation: 1,
+    overflow: "hidden"
   },
-  shadow: {
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    shadowOpacity: 0.2,
-    elevation: 2
+  socialConnect: {
+    backgroundColor: argonTheme.COLORS.WHITE,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: "#8898AA"
   },
-  button: {
-    marginBottom: theme.SIZES.BASE,
-    width: width - theme.SIZES.BASE * 2
+  inputIcons: {
+    marginRight: 12
   },
-  optionsButton: {
-    width: "auto",
-    height: 34,
-    paddingHorizontal: theme.SIZES.BASE,
-    paddingVertical: 10
-  },
-  input: {
-    borderBottomWidth: 1
-  },
-  inputDefault: {
-    borderBottomColor: argonTheme.COLORS.PLACEHOLDER
-  },
-  inputTheme: {
-    borderBottomColor: argonTheme.COLORS.PRIMARY
-  },
-  inputInfo: {
-    borderBottomColor: argonTheme.COLORS.INFO
-  },
-  inputSuccess: {
-    borderBottomColor: argonTheme.COLORS.SUCCESS
-  },
-  inputWarning: {
-    borderBottomColor: argonTheme.COLORS.WARNING
-  },
-  inputDanger: {
-    borderBottomColor: argonTheme.COLORS.ERROR
-  },
-  social: {
-    width: theme.SIZES.BASE * 3.5,
-    height: theme.SIZES.BASE * 3.5,
-    borderRadius: theme.SIZES.BASE * 1.75,
-    justifyContent: "center"
-  },
+ 
 });
 
 export default Elements;

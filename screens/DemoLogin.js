@@ -12,28 +12,17 @@ import {
 
 import Modal from 'react-native-modal';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
-import shortid from "shortid";
 
 import base64 from 'react-native-base64'
 import { List, RadioButton } from 'react-native-paper';
 import * as SecureStore from "expo-secure-store";
 
-import { createStackNavigator } from "@react-navigation/stack";
-import { createDrawerNavigator } from "@react-navigation/drawer";
 import { Block, Checkbox, Text, theme } from "galio-framework";
 
 import { Images, argonTheme } from "../constants";
 import { Button, Select, Icon, Input, Header, Switch } from "../components/";
 
-
-import useBaseURL from '../Hooks/useBaseURL';
-import { DynamoDBCustomizations } from "aws-sdk/lib/services/dynamodb";
-
-
 const { width, height } = Dimensions.get("screen");
-
-const Stack = createStackNavigator();
-const Drawer = createDrawerNavigator();
 
 const DemoLogin = (props) => {
   const { navigation } = props;
@@ -41,9 +30,11 @@ const DemoLogin = (props) => {
   const [visibleModal, setVisibleModal]= useState(null)  
 
   const [sexo, setSexo]= useState("Femenino")  
-  const [edad, setEdad]= useState("")
+  const [edad, setEdad]= useState(0)
   const [dni, setDni]= useState("")
-  const [diagnostico, setDiagnostico]= useState("")
+  const [diagnostico, setDiagnostico]= useState(
+    { id: '0', title:" "}
+  )
   const [otros, setOtros]= useState("")
   const [selectedItem, setSelectedItem] = useState(false);
 
@@ -74,16 +65,38 @@ const DemoLogin = (props) => {
     </TouchableOpacity>
   );
 
-  const _renderModalContent = () => (
+  const _renderModalContent = () => (    
     <View style={styles.modalContent}>
       <Text>Quiere agregar GRBAS!</Text>
+      
       {_renderButton('No', () => goDemo())}
       {_renderButton('Si', () => goGRABAS())}
     </View>
   );
-
+  
+  const validar=()=>{
+    return dni === "";
+  }
   const goGRABAS = async()=>{ 
     setVisibleModal(null);
+    if( diagnostico.id ==="2")
+    {
+      diagnostico.title =otros;
+    } 
+    else{
+      diagnostico.title +=' ('+ otros+ ') ';
+    }    
+
+    SecureStore.setItemAsync("metadata",  JSON.stringify(
+      { 
+        date: new Date(),
+        dni:  base64.encode(dni),   
+        sexo: sexo,
+        edad: edad,
+        diagnostico: diagnostico.title,         
+      }
+    )); 
+
     navigation.navigate("Elements"); 
    };
   const goDemo = async()=>{
@@ -106,10 +119,10 @@ const DemoLogin = (props) => {
       }
     ));            
      
-    //navigation.navigate("Demo");   
+    navigation.navigate("Demo");   
      
     
-    console.log(await SecureStore.getItemAsync("metadata"));
+    
   }
 
   const handleDiagnostico = (item) => {
@@ -163,12 +176,14 @@ const DemoLogin = (props) => {
                   <Text size={16} color={argonTheme.COLORS.PRIMARY}>                                            
                       DNI:
                       {" "}
-                  </Text>
+                  </Text>                  
                   <Input
                     id="dni"
                     borderless
                     placeholder="DNI"
                     name="dni"
+                    value={dni.toUpperCase()}
+                    maxLength={11}
                     onChangeText={(dni) => setDni(dni)}                    
                     iconContent={
                       <Icon
@@ -297,11 +312,12 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: 'lightblue',
     padding: 12,
-    margin: 16,
+    margin: 16,        
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 4,
     borderColor: 'rgba(0, 0, 0, 0.1)',
+    
   },
   plus: {
     position: "absolute",

@@ -17,12 +17,7 @@ import { Images, argonTheme } from "../constants";
 
 const Demo = (props) => {
 
-    const { navigation } = props;
-
-    useEffect(()=>{                            
-        //console.log(navigation);
-      },[]);
-   
+    const { navigation } = props;  
     
     return (
         <Block flex style={styles.container}>            
