@@ -10,6 +10,7 @@ import {
   View,
 } from "react-native";
 
+import RNPickerSelect from 'react-native-picker-select';
 import Modal from 'react-native-modal';
 import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
 
@@ -32,68 +33,68 @@ const DemoLogin = (props) => {
   const [sexo, setSexo]= useState("Femenino")  
   const [edad, setEdad]= useState(0)
   const [dni, setDni]= useState("")
-  const [diagnostico, setDiagnostico]= useState(
-    { id: '0', title:" "}
-  )
+  const [diagnostico, setDiagnostico]= useState("")
   const [otros, setOtros]= useState("")
   const [selectedItem, setSelectedItem] = useState(false);
 
   const data = [
-    { id: '1', title:"Disfonía psicogenica"},
-    { id: '2', title:"Otros..."},
-    { id: '3', title:"Disfonía por tension muscular"},
-    { id: '4', title:"Disfonía por reflujo"},
-    { id: '5', title:"Disfonía de esfuerzo"},
-    { id: '6', title:"Disfonía espasmodica"},
-    { id: '7', title:"Nodulo en cuerda vocal"},
-    { id: '8', title:"Quiste en cuerda vocal"},
-    { id: '9', title:"Surcus en cuerda vocal"},
-    { id: '10', title:"Parálisis de cuerda vocal"},
-    { id: '11',title:"Papiloma"},
-    { id: '12',title:"Hiato"},
-    { id: '13',title:"Polipos"},
-    { id: '14',title:"Leocuplasia"},
-    { id: '15',title:"Laringitis Crónica"},
-    { id: '16',title:"Edema de Reinke"},
+    { label:"Otros...", value:"Otros..."},
+    { label:"Disfonía psicogenica", value:"Disfonía psicogenica"},
+    { label:"Disfonía por tension muscular", value:"Disfonía por tension muscular"},
+    { label:"Disfonía por reflujo", value:"Disfonía por reflujo"},
+    { label:"Disfonía de esfuerzo", value:"Disfonía de esfuerzo"},
+    { label:"Disfonía espasmodica", value:"Disfonía espasmodica"},
+    { label:"Nodulo en cuerda vocal", value:"Nodulo en cuerda vocal"},
+    { label:"Quiste en cuerda vocal", value:"Quiste en cuerda vocal"},
+    { label:"Surcus en cuerda vocal", value:"Surcus en cuerda vocal"},
+    { label:"Parálisis de cuerda vocal", value:"Parálisis de cuerda vocal"},
+    { label:"Papiloma", value:"Papiloma"},
+    { label:"Hiato", value:"Hiato"},
+    { label:"Polipos", value:"Polipos"},
+    { label:"Leocuplasia", value:"Leocuplasia"},
+    { label:"Laringitis Crónica", value:"Laringitis Crónica"},
+    { label:"Edema de Reinke", value:"Edema de Reinke"},
   ];
   
   const _renderButton = (text, onPress) => (
-    <TouchableOpacity onPress={onPress}>
+    <>    
+    <TouchableOpacity onPress={onPress}>      
+      
       <View style={styles.button} >
         <Text>{text}</Text>
       </View>
     </TouchableOpacity>
+    </>
   );
 
   const _renderModalContent = () => (    
     <View style={styles.modalContent}>
+      <TouchableOpacity style={styles.close} left onPress={() => setVisibleModal(null)}>
+        <View>
+        <Text>X</Text>
+        </View>
+      </TouchableOpacity>      
       <Text>Quiere agregar GRBAS!</Text>
       
       {_renderButton('No', () => goDemo())}
       {_renderButton('Si', () => goGRABAS())}
     </View>
-  );
-  
-  const validar=()=>{
-    return dni === "";
-  }
-  const goGRABAS = async()=>{ 
-    setVisibleModal(null);
-    if( diagnostico.id ==="2")
-    {
-      diagnostico.title =otros;
-    } 
-    else{
-      diagnostico.title +=' ('+ otros+ ') ';
-    }    
+  );  
 
+  const goGRABAS = async()=>{     
+    setVisibleModal(null);
+    if( diagnostico ==="Otros...")
+    {
+      setDiagnostico(otros);
+    } 
+    
     SecureStore.setItemAsync("metadata",  JSON.stringify(
       { 
         date: new Date(),
         dni:  base64.encode(dni),   
         sexo: sexo,
         edad: edad,
-        diagnostico: diagnostico.title,         
+        diagnostico: diagnostico,         
       }
     )); 
 
@@ -101,13 +102,10 @@ const DemoLogin = (props) => {
    };
   const goDemo = async()=>{
     setVisibleModal(null);
-    if( diagnostico.id ==="2")
+    if( diagnostico ==="Otros...")
     {
-      diagnostico.title =otros;
-    } 
-    else{
-      diagnostico.title +=' ('+ otros+ ') ';
-    }    
+      setDiagnostico(otros);
+    }  
 
     SecureStore.setItemAsync("metadata",  JSON.stringify(
       { 
@@ -115,20 +113,21 @@ const DemoLogin = (props) => {
         dni:  base64.encode(dni),   
         sexo: sexo,
         edad: edad,
-        diagnostico: diagnostico.title,         
+        diagnostico: diagnostico,         
       }
     ));            
      
     navigation.navigate("Demo");   
-     
-    
-    
   }
 
-  const handleDiagnostico = (item) => {
-    //console.log(item);
+  const handleDiagnostico = (item) => {    
+    console.log(item);
     setDiagnostico(item);
-    setSelectedItem(true);
+    setSelectedItem(false); 
+    if (item === "Otros...") {
+      setSelectedItem(true); 
+    }
+    
   }
 
   useEffect(()=>{                            
@@ -173,29 +172,29 @@ const DemoLogin = (props) => {
                   </RadioButton.Group>                  
                 
                   <Block  width={width * 0.75} style={{ marginBottom: 15 }}>
-                  <Text size={16} color={argonTheme.COLORS.PRIMARY}>                                            
-                      DNI:
-                      {" "}
-                  </Text>                  
-                  <Input
-                    id="dni"
-                    borderless
-                    placeholder="DNI"
-                    name="dni"
-                    value={dni.toUpperCase()}
-                    maxLength={11}
-                    onChangeText={(dni) => setDni(dni)}                    
-                    iconContent={
-                      <Icon
-                        size={16}
-                        color={argonTheme.COLORS.ICON}
-                        name="g-check"
-                        family="ArgonExtra"
-                        style={styles.inputIcons}
-                        
-                      />
-                    }
-                  />
+                    <Text size={16} color={argonTheme.COLORS.PRIMARY}>                                            
+                        DNI:
+                        {" "}
+                    </Text>                  
+                    <Input
+                      id="dni"
+                      borderless
+                      placeholder="DNI"
+                      name="dni"
+                      value={dni.toUpperCase()}
+                      maxLength={9}
+                      onChangeText={(dni) => setDni(dni)}                    
+                      iconContent={
+                        <Icon
+                          size={16}
+                          color={argonTheme.COLORS.ICON}
+                          name="g-check"
+                          family="ArgonExtra"
+                          style={styles.inputIcons}
+                          
+                        />
+                      }
+                    />
                   </Block>
 
                 <Block  width={width * 0.75} style={{ marginBottom: 15 }}>
@@ -227,28 +226,25 @@ const DemoLogin = (props) => {
                         Diagnóstico:
                         {" "}
                     </Text> 
-
-                    <AutocompleteDropdown
-                      
-                      clearOnFocus={false}
-                      closeOnBlur={true}
-                      closeOnSubmit={false}
-                      initialValue={{ id: '2' }} // or just '2'
-                      name="diagnostico"
-                      onSelectItem={(diagnostico)=>handleDiagnostico(diagnostico)}
-                      dataSet={data}
-                      showClear={false}
-                      textInputProps={{
-                        id:"diagnostico",
-                        placeholder: 'Diagnóstico ... ',
-                        autoCorrect: false,
-                        autoCapitalize: 'none',
-                        style: {
-                          color: 'black',
-                          paddingLeft: 18,
-                        },
-                      }}
+                    <RNPickerSelect
+                        onValueChange={(diagnostico) => handleDiagnostico(diagnostico)}
+                        items={data}  
+                        placeholder={{}}                                                
+                        style={{
+                          inputAndroid: {                            
+                            color:"black"
+                          },
+                          iconContainer: {
+                            top: 5,
+                            right: 15,
+                          },
+                        }}
+                        value={diagnostico}
+                        useNativeAndroidPickerStyle={false}
+                        InputAccessoryView={() => null}                        
+                                                                     
                     />
+
 
                 </Block>
 
@@ -304,6 +300,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 4,
     borderColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  close:{ 
+    marginRight:-300, 
+    borderRadius:4, 
+    backgroundColor:"lightblue",
+    borderRadius: 4,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+    padding: 4,
+    
   },
   bottomModal: {
     justifyContent: 'flex-end',

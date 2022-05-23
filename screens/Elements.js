@@ -10,31 +10,18 @@ import {
   View,
 } from "react-native";
 
-import Modal from 'react-native-modal';
-import { AutocompleteDropdown } from 'react-native-autocomplete-dropdown';
-import shortid from "shortid";
-
-import base64 from 'react-native-base64'
 import { List, RadioButton } from 'react-native-paper';
 import * as SecureStore from "expo-secure-store";
 
-import { createStackNavigator } from "@react-navigation/stack";
-import { createDrawerNavigator } from "@react-navigation/drawer";
+
 import { Block, Checkbox, Text, theme } from "galio-framework";
 
 import { Images, argonTheme } from "../constants";
 import { Button, Select, Icon, Input, Header, Switch } from "../components/";
 
 
-import useBaseURL from '../Hooks/useBaseURL';
-import { DynamoDBCustomizations } from "aws-sdk/lib/services/dynamodb";
-import Demo from "./Demo";
-
-
 const { width, height } = Dimensions.get("screen");
 
-const Stack = createStackNavigator();
-const Drawer = createDrawerNavigator();
 
 const Elements = (props) => {
   const { navigation } = props;
@@ -44,6 +31,7 @@ const Elements = (props) => {
   const [b, setB]= useState("0")
   const [a, setA]= useState("0")
   const [s, setS]= useState("0")
+  const [tmf, setTMF]= useState("0.0")
 
   const goDemo = async()=>{              
     const data= JSON.parse(await SecureStore.getItemAsync("metadata"));
@@ -61,11 +49,13 @@ const Elements = (props) => {
           a: a,
           s: s
         },
+        tmf: tmf
 
       }
     ));  
+    console.log("meta",await SecureStore.getItemAsync("metadata"));
     navigation.navigate("Demo");   
-    //console.log("meta",await SecureStore.getItemAsync("metadata"));
+    
   }
 
   return (   
@@ -77,14 +67,13 @@ const Elements = (props) => {
       >
       <Block safe flex middle>
         <Block style={styles.registerContainer}>
-          <Block flex={0.15} middle style={styles.socialConnect}>
+          <Block flex={0.10} middle style={styles.socialConnect}>
             <Text color={argonTheme.COLORS.PRIMARY} size={22}>
               GRBAS
             </Text>
-            
           </Block>
           <Block flex>
-            <Block flex={0.07} middle>
+            <Block flex={0.03} middle>
             </Block>
             <Block flex center>
               <KeyboardAvoidingView
@@ -94,7 +83,7 @@ const Elements = (props) => {
               >
                 <Block  width={width * 0.75} style={{ marginBottom: 15 }}>                
                   <RadioButton.Group row  onValueChange={newValue => setG(newValue)} value={g}>
-                      <Text>Quiere agregar G:</Text>
+                      <Text>Grade:</Text>
                   
                         <Block left>
                           <Text size={16} color={argonTheme.COLORS.PRIMARY}>  0</Text>
@@ -117,7 +106,7 @@ const Elements = (props) => {
 
                  <Block  width={width * 0.75} style={{ marginBottom: 15 }}>                
                   <RadioButton.Group row  onValueChange={newValue => setR(newValue)} value={r}>
-                  <Text>Quiere agregar R:</Text>
+                  <Text>Roughness:</Text>
                         <Block left>
                           <Text size={16} color={argonTheme.COLORS.PRIMARY}>  0</Text>
                           <RadioButton value="0" />
@@ -139,7 +128,7 @@ const Elements = (props) => {
 
                  <Block  width={width * 0.75} style={{ marginBottom: 15 }}>                
                   <RadioButton.Group row  onValueChange={newValue => setB(newValue)} value={b}>
-                  <Text>Quiere agregar B:</Text>
+                  <Text>Breathy:</Text>
                         <Block left>
                           <Text size={16} color={argonTheme.COLORS.PRIMARY}>  0</Text>
                           <RadioButton value="0" />
@@ -161,7 +150,7 @@ const Elements = (props) => {
 
                  <Block  width={width * 0.75} style={{ marginBottom: 15 }}>                
                   <RadioButton.Group row  onValueChange={newValue => setA(newValue)} value={a}>
-                  <Text>Quiere agregar A:</Text>
+                  <Text>Asthenic:</Text>
                         <Block left>
                           <Text size={16} color={argonTheme.COLORS.PRIMARY}>  0</Text>
                           <RadioButton value="0" />
@@ -183,7 +172,7 @@ const Elements = (props) => {
 
                 <Block  width={width * 0.75} style={{ marginBottom: 15 }}>                
                   <RadioButton.Group row  onValueChange={newValue => setS(newValue)} value={s}>
-                  <Text>Quiere agregar S: </Text>
+                  <Text>Strain: </Text>
                         <Block left>
                           <Text size={16} color={argonTheme.COLORS.PRIMARY}>  0</Text>
                           <RadioButton value="0" />
@@ -203,6 +192,30 @@ const Elements = (props) => {
                   </RadioButton.Group>                  
                 </Block>                 
  
+                <Block  width={width * 0.75} style={{ marginBottom: 15 }}>
+                    <Text size={16} color={argonTheme.COLORS.PRIMARY}>                                            
+                        TMF:
+                        {" "}
+                    </Text>                  
+                    <Input
+                      id="tmf"
+                      borderless
+                      placeholder="TMF (0.0)"
+                      name="tmf"
+                      onChangeText={(tmf) => setTMF(tmf)}     
+                      keyboardType="numeric"               
+                      iconContent={
+                        <Icon
+                          size={16}
+                          color={argonTheme.COLORS.ICON}
+                          name="g-check"
+                          family="ArgonExtra"
+                          style={styles.inputIcons}
+                          
+                        />
+                      }
+                    />
+                </Block>
                 <Block middle>
                 <Button 
                     color="primary" 
