@@ -73,7 +73,7 @@ const Elements = (props) => {
             </Text>
           </Block>
           <Block flex>
-            <Block flex={0.03} middle>
+            <Block flex={0.17} middle>
             </Block>
             <Block flex center>
               <KeyboardAvoidingView
@@ -81,118 +81,127 @@ const Elements = (props) => {
                 behavior="padding"
                 enabled
               >
-                <Block  width={width * 0.75} style={{ marginBottom: 15 }}>                
-                  <RadioButton.Group row  onValueChange={newValue => setG(newValue)} value={g}>
-                      <Text>Grade:</Text>
-                  
-                        <Block left>
-                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  0</Text>
+                <Block width={width * 0.75} style={{ marginBottom: 35 }}>                                  
+                  <Block left>
+                      <Text>Grade: </Text>
+                  </Block>                  
+                  <RadioButton.Group row  onValueChange={newValue => setG(newValue)} value={g}>                                       
+                        <Block center style={{ marginTop: -50, marginRight:85 }} >
+                          <Text style={{ marginRight:10 }} size={16} color={argonTheme.COLORS.PRIMARY}>  0</Text>
                           <RadioButton value="0" />
                         </Block>
-                        <Block  center style={{ marginTop: -55, marginRight:85 }}>
-                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  1</Text>
+                        <Block center style={{ marginTop: -57,marginRight:5 }}>
+                          <Text style={{ marginRight:10 }} size={16} color={argonTheme.COLORS.PRIMARY}>  1</Text>
                           <RadioButton value="1" />
                         </Block> 
-                        <Block  center style={{ marginTop: -55, marginRight:-85 }}>
-                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  2</Text>
+                        <Block center style={{ marginTop: -57, marginRight:-70 }}>
+                          <Text style={{ marginRight:10 }} size={16} color={argonTheme.COLORS.PRIMARY}>  2</Text>
                           <RadioButton value="2" />
                         </Block> 
-                        <Block  right style={{ marginTop: -60 }}>
-                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  3</Text>
+                        <Block center style={{ marginTop: -57,  marginRight:-155 }}>
+                          <Text style={{ marginRight:10 }} size={16} color={argonTheme.COLORS.PRIMARY}>  3</Text>
                           <RadioButton value="3" />
-                        </Block>  
-                  </RadioButton.Group>                  
+                        </Block>                        
+                  </RadioButton.Group> 
                 </Block>  
 
-                 <Block  width={width * 0.75} style={{ marginBottom: 15 }}>                
-                  <RadioButton.Group row  onValueChange={newValue => setR(newValue)} value={r}>
-                  <Text>Roughness:</Text>
-                        <Block left>
-                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  0</Text>
+                 <Block  width={width * 0.75} style={{ marginBottom: 35 }}>   
+                    <Block left>
+                      <Text>Roughness:</Text>
+                    </Block>             
+                  <RadioButton.Group row  onValueChange={newValue => setR(newValue)} value={r}>                  
+                        <Block center style={{ marginTop: -50, marginRight:85 }} >
+                          <Text style={{ marginRight:10 }} size={16} color={argonTheme.COLORS.PRIMARY}>  0</Text>
                           <RadioButton value="0" />
                         </Block>
-                        <Block  center style={{ marginTop: -55, marginRight:85 }}>
-                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  1</Text>
+                        <Block center style={{ marginTop: -57,marginRight:5 }}>
+                          <Text style={{ marginRight:10 }} size={16} color={argonTheme.COLORS.PRIMARY}>  1</Text>
                           <RadioButton value="1" />
                         </Block> 
-                        <Block  center style={{ marginTop: -55, marginRight:-85 }}>
-                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  2</Text>
+                        <Block center style={{ marginTop: -57, marginRight:-70 }}>
+                          <Text style={{ marginRight:10 }} size={16} color={argonTheme.COLORS.PRIMARY}>  2</Text>
                           <RadioButton value="2" />
                         </Block> 
-                        <Block  right style={{ marginTop: -60 }}>
-                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  3</Text>
+                        <Block center style={{ marginTop: -57,  marginRight:-155 }}>
+                          <Text style={{ marginRight:10 }} size={16} color={argonTheme.COLORS.PRIMARY}>  3</Text>
                           <RadioButton value="3" />
-                        </Block>  
+                        </Block>     
                   </RadioButton.Group>                  
                 </Block>   
 
-                 <Block  width={width * 0.75} style={{ marginBottom: 15 }}>                
-                  <RadioButton.Group row  onValueChange={newValue => setB(newValue)} value={b}>
-                  <Text>Breathy:</Text>
-                        <Block left>
-                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  0</Text>
+                 <Block  width={width * 0.75} style={{ marginBottom: 35 }}>  
+                    <Block left>
+                      <Text>Breathy:</Text>
+                    </Block>               
+                  <RadioButton.Group row  onValueChange={newValue => setB(newValue)} value={b}>                  
+                  <Block center style={{ marginTop: -50, marginRight:85 }} >
+                          <Text style={{ marginRight:10 }} size={16} color={argonTheme.COLORS.PRIMARY}>  0</Text>
                           <RadioButton value="0" />
                         </Block>
-                        <Block  center style={{ marginTop: -55, marginRight:85 }}>
-                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  1</Text>
+                        <Block center style={{ marginTop: -57,marginRight:5 }}>
+                          <Text style={{ marginRight:10 }} size={16} color={argonTheme.COLORS.PRIMARY}>  1</Text>
                           <RadioButton value="1" />
                         </Block> 
-                        <Block  center style={{ marginTop: -55, marginRight:-85 }}>
-                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  2</Text>
+                        <Block center style={{ marginTop: -57, marginRight:-70 }}>
+                          <Text style={{ marginRight:10 }} size={16} color={argonTheme.COLORS.PRIMARY}>  2</Text>
                           <RadioButton value="2" />
                         </Block> 
-                        <Block  right style={{ marginTop: -60 }}>
-                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  3</Text>
+                        <Block center style={{ marginTop: -57,  marginRight:-155 }}>
+                          <Text style={{ marginRight:10 }} size={16} color={argonTheme.COLORS.PRIMARY}>  3</Text>
                           <RadioButton value="3" />
                         </Block>  
                   </RadioButton.Group>                  
                 </Block> 
 
-                 <Block  width={width * 0.75} style={{ marginBottom: 15 }}>                
-                  <RadioButton.Group row  onValueChange={newValue => setA(newValue)} value={a}>
-                  <Text>Asthenic:</Text>
-                        <Block left>
-                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  0</Text>
+                 <Block  width={width * 0.75} style={{ marginBottom: 35 }}>
+                    <Block left>
+                      <Text>Asthenic:</Text>
+                    </Block>                 
+                  <RadioButton.Group row  onValueChange={newValue => setA(newValue)} value={a}>                  
+                       <Block center style={{ marginTop: -50, marginRight:85 }} >
+                          <Text style={{ marginRight:10 }} size={16} color={argonTheme.COLORS.PRIMARY}>  0</Text>
                           <RadioButton value="0" />
                         </Block>
-                        <Block  center style={{ marginTop: -55, marginRight:85 }}>
-                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  1</Text>
+                        <Block center style={{ marginTop: -57,marginRight:5 }}>
+                          <Text style={{ marginRight:10 }} size={16} color={argonTheme.COLORS.PRIMARY}>  1</Text>
                           <RadioButton value="1" />
                         </Block> 
-                        <Block  center style={{ marginTop: -55, marginRight:-85 }}>
-                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  2</Text>
+                        <Block center style={{ marginTop: -57, marginRight:-70 }}>
+                          <Text style={{ marginRight:10 }} size={16} color={argonTheme.COLORS.PRIMARY}>  2</Text>
                           <RadioButton value="2" />
                         </Block> 
-                        <Block  right style={{ marginTop: -60 }}>
-                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  3</Text>
+                        <Block center style={{ marginTop: -57,  marginRight:-155 }}>
+                          <Text style={{ marginRight:10 }} size={16} color={argonTheme.COLORS.PRIMARY}>  3</Text>
                           <RadioButton value="3" />
                         </Block>  
                   </RadioButton.Group>                  
                 </Block> 
 
-                <Block  width={width * 0.75} style={{ marginBottom: 15 }}>                
-                  <RadioButton.Group row  onValueChange={newValue => setS(newValue)} value={s}>
-                  <Text>Strain: </Text>
-                        <Block left>
-                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  0</Text>
+                <Block  width={width * 0.75} style={{ marginBottom: 35 }}>  
+                    <Block left>
+                      <Text>Strain:</Text>
+                    </Block>              
+                  <RadioButton.Group row  onValueChange={newValue => setS(newValue)} value={s}>                  
+                       <Block center style={{ marginTop: -50, marginRight:85 }} >
+                          <Text style={{ marginRight:10 }} size={16} color={argonTheme.COLORS.PRIMARY}>  0</Text>
                           <RadioButton value="0" />
                         </Block>
-                        <Block  center style={{ marginTop: -55, marginRight:85 }}>
-                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  1</Text>
+                        <Block center style={{ marginTop: -57,marginRight:5 }}>
+                          <Text style={{ marginRight:10 }} size={16} color={argonTheme.COLORS.PRIMARY}>  1</Text>
                           <RadioButton value="1" />
                         </Block> 
-                        <Block  center style={{ marginTop: -55, marginRight:-85 }}>
-                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  2</Text>
+                        <Block center style={{ marginTop: -57, marginRight:-70 }}>
+                          <Text style={{ marginRight:10 }} size={16} color={argonTheme.COLORS.PRIMARY}>  2</Text>
                           <RadioButton value="2" />
                         </Block> 
-                        <Block  right style={{ marginTop: -60 }}>
-                          <Text size={16} color={argonTheme.COLORS.PRIMARY}>  3</Text>
+                        <Block center style={{ marginTop: -57,  marginRight:-155 }}>
+                          <Text style={{ marginRight:10 }} size={16} color={argonTheme.COLORS.PRIMARY}>  3</Text>
                           <RadioButton value="3" />
                         </Block>  
                   </RadioButton.Group>                  
                 </Block>                 
  
-                <Block  width={width * 0.75} style={{ marginBottom: 15 }}>
+                <Block  width={width * 0.75} style={{ marginBottom: 35 }}>
                     <Text size={16} color={argonTheme.COLORS.PRIMARY}>                                            
                         TMF:
                         {" "}

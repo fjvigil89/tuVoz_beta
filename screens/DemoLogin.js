@@ -35,7 +35,7 @@ const DemoLogin = (props) => {
   const [dni, setDni]= useState("")
   const [diagnostico, setDiagnostico]= useState("")
   const [otros, setOtros]= useState("")
-  const [selectedItem, setSelectedItem] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(true);
 
   const data = [
     { label:"Otros...", value:"Otros..."},
@@ -92,9 +92,9 @@ const DemoLogin = (props) => {
       { 
         date: new Date(),
         dni:  base64.encode(dni),   
-        sexo: sexo,
+        sexo: sexo.toUpperCase(),
         edad: edad,
-        diagnostico: diagnostico,         
+        diagnostico: diagnostico.toUpperCase(),         
       }
     )); 
 
@@ -111,9 +111,9 @@ const DemoLogin = (props) => {
       { 
         date: new Date(),
         dni:  base64.encode(dni),   
-        sexo: sexo,
+        sexo: sexo.toUpperCase(),
         edad: edad,
-        diagnostico: diagnostico,         
+        diagnostico: diagnostico.toUpperCase(),         
       }
     ));            
      
@@ -257,7 +257,7 @@ const DemoLogin = (props) => {
 
                       <Input
                       id="otros"
-                      
+                      value={otros.toUpperCase()}
                       borderless
                       placeholder="Otros"
                       name="otros"
