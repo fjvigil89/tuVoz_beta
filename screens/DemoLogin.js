@@ -33,7 +33,7 @@ const DemoLogin = (props) => {
   const [sexo, setSexo]= useState("Femenino")  
   const [edad, setEdad]= useState(0)
   const [dni, setDni]= useState("")
-  const [diagnostico, setDiagnostico]= useState("")
+  const [diagnostico, setDiagnostico]= useState("Otros...")
   const [otros, setOtros]= useState("")
   const [selectedItem, setSelectedItem] = useState(true);
 
@@ -78,15 +78,12 @@ const DemoLogin = (props) => {
       
       {_renderButton('No', () => goDemo())}
       {_renderButton('Si', () => goGRABAS())}
+      
     </View>
   );  
 
   const goGRABAS = async()=>{     
-    setVisibleModal(null);
-    if( diagnostico ==="Otros...")
-    {
-      setDiagnostico(otros);
-    } 
+    setVisibleModal(null);        
     
     SecureStore.setItemAsync("metadata",  JSON.stringify(
       { 
@@ -94,34 +91,27 @@ const DemoLogin = (props) => {
         dni:  base64.encode(dni),   
         sexo: sexo.toUpperCase(),
         edad: edad,
-        diagnostico: diagnostico.toUpperCase(),         
+        diagnostico: selectedItem ? otros.toUpperCase() : diagnostico.toUpperCase(),         
       }
     )); 
-
     navigation.navigate("Elements"); 
    };
   const goDemo = async()=>{
-    setVisibleModal(null);
-    if( diagnostico ==="Otros...")
-    {
-      setDiagnostico(otros);
-    }  
-
+    setVisibleModal(null);   
     SecureStore.setItemAsync("metadata",  JSON.stringify(
       { 
         date: new Date(),
         dni:  base64.encode(dni),   
         sexo: sexo.toUpperCase(),
         edad: edad,
-        diagnostico: diagnostico.toUpperCase(),         
+        diagnostico: selectedItem ? otros.toUpperCase() : diagnostico.toUpperCase(),         
       }
     ));            
      
     navigation.navigate("Demo");   
   }
 
-  const handleDiagnostico = (item) => {    
-    console.log(item);
+  const handleDiagnostico = (item) => {        
     setDiagnostico(item);
     setSelectedItem(false); 
     if (item === "Otros...") {
@@ -257,7 +247,7 @@ const DemoLogin = (props) => {
 
                       <Input
                       id="otros"
-                      value={otros.toUpperCase()}
+                      value={otros}
                       borderless
                       placeholder="Otros"
                       name="otros"
