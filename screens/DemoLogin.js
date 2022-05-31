@@ -35,6 +35,8 @@ const DemoLogin = (props) => {
   const [dni, setDni]= useState("")
   const [diagnostico, setDiagnostico]= useState("Otros...")
   const [otros, setOtros]= useState("")
+  const [detalles, setDetalles]= useState("")
+  
   const [selectedItem, setSelectedItem] = useState(true);
 
   const data = [
@@ -91,7 +93,8 @@ const DemoLogin = (props) => {
         dni:  base64.encode(dni),   
         sexo: sexo.toUpperCase(),
         edad: edad,
-        diagnostico: selectedItem ? otros.toUpperCase() : diagnostico.toUpperCase(),         
+        diagnostico: selectedItem ? otros.toUpperCase() : diagnostico.toUpperCase(),
+        detalles: detalles.toUpperCase()         
       }
     )); 
     navigation.navigate("Elements"); 
@@ -104,7 +107,8 @@ const DemoLogin = (props) => {
         dni:  base64.encode(dni),   
         sexo: sexo.toUpperCase(),
         edad: edad,
-        diagnostico: selectedItem ? otros.toUpperCase() : diagnostico.toUpperCase(),         
+        diagnostico: selectedItem ? otros.toUpperCase() : diagnostico.toUpperCase(), 
+        detalles: detalles.toUpperCase(),    
       }
     ));            
      
@@ -255,7 +259,27 @@ const DemoLogin = (props) => {
                     />
 
                   </Block>
-                ) : null }
+                ) : 
+                (
+                  <Block  width={width * 0.75} style={{ marginBottom: 15 }}>
+                      <Text size={16} color={argonTheme.COLORS.PRIMARY}>                                            
+                          Detalles:
+                          {" "}
+                      </Text> 
+
+                      <Input
+                      id="detalles"
+                      value={detalles}
+                      borderless
+                      placeholder="Detalles"
+                      name="detalles"
+                      onChangeText={(detalles) => setDetalles(detalles)}
+                    />
+
+                  </Block>
+
+                )
+                }
                 
                 <Block middle>
                   <View style={styles.createButton}>

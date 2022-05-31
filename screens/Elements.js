@@ -42,6 +42,7 @@ const Elements = (props) => {
         sexo: data.sexo,
         edad: data.edad,
         diagnostico: data.diagnostico,
+        detalles: data.detalles,
         grbas:{
           g: g,
           r: r,

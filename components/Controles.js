@@ -25,8 +25,8 @@ import * as SecureStore from "expo-secure-store";
 
 
 const s3Bucket= new AWS.S3({
-    accessKeyId:"AKIA4RAX6HMDBQ5MBKP7",
-    secretAccessKey:"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",
+    accessKeyId:"AKIA4RAX6HMDMSGCRHMF",
+    secretAccessKey:"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",
     Bucket:"tuvoz-bucket",
     signatureVersion:"v4",
 });
