@@ -1059,11 +1059,16 @@ const Controles = (props) => {
 
     
     const phrase = [
-         "Francia, Suiza y Hungría ya hicieron causa común.",
-         "Mi primer profesor de lengua fue López García.",
-         "Guillermo y Yolanda practicaban ciclismo con Jaime.",
-         "El primero en Guipúzcoa y el segundo en Valladolid.",
-         "Fue aquel hombre tan gordo el que se acercó en globo.",       
+        "Aaaaaaaaa",
+        "Iiiiiiiii",
+        "Uuuuuuuuu",
+        "Érase un pastor que tenía un rebaño. ",
+        "En el monte se aburría mucho.",
+        "¡Que viene el lobo, socorro! grito el pastor.",
+        "Uno de ellos preguntó: ¿Dónde está el lobo?.",
+        "¡Socorro, el lobo se está comiendo a mis ovejas!",
+        "El lobo se comió todo el rebaño",
+        "En boca del mentiroso, lo cierto se hace dudoso."       
       ];
     
     const [current, setCurrent] = useState(phrase[0]);
@@ -1155,10 +1160,11 @@ const styles = StyleSheet.create({
     },
     subTitle: {        
         width: 300,
-        height: 100,
+        height: 400,
         color: "#fff",
-        fontSize: 25,
-        textAlign: "justify",
+        fontSize: 35,
+        textAlign: "center",
+        marginTop:20,
       },    
     padded: {
         paddingHorizontal: theme.SIZES.BASE * 2,
