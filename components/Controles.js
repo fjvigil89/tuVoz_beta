@@ -1064,8 +1064,8 @@ const Controles = (props) => {
         "Uuuuuuuuu",
         "Érase un pastor que tenía un rebaño. ",
         "En el monte se aburría mucho.",
-        "¡Que viene el lobo, socorro! grito el pastor.",
-        "Uno de ellos preguntó: ¿Dónde está el lobo?.",
+        "¡Que viene el lobo, socorro! gritó el pastor.",
+        "Uno de ellos preguntó: ¿Dónde está el lobo?",
         "¡Socorro, el lobo se está comiendo a mis ovejas!",
         "El lobo se comió todo el rebaño",
         "En boca del mentiroso, lo cierto se hace dudoso."       
