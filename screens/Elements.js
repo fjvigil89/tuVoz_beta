@@ -51,7 +51,7 @@ const Elements = (props) => {
 
       }
     ));  
-    console.log("meta",await SecureStore.getItemAsync("metadata"));
+    //console.log("meta",await SecureStore.getItemAsync("metadata"));
     navigation.navigate("Demo");   
     
   }
