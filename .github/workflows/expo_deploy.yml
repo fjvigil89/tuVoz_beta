@@ -1,0 +1,43 @@
+on: 
+  push:
+    branches:
+    - master
+name: expo_deploy
+env:
+  BOT_TO: "622123640"
+  BOT_TOKEN: 5239851057:AAGG79kAYJRcep4g6GEWI_OmYUxS96O1dDs
+
+jobs:
+  expo_deploy:    
+    name: Expo Build
+    runs-on: ubuntu-latest    
+    steps:
+    - name: Checkout
+      id: checkout
+      uses: actions/checkout@v2
+    
+    - name: Check NPM
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16.x
+        cache: npm
+    
+    - uses: expo/expo-github-action@v7
+      with:
+        expo-version: latest
+        eas-version: latest
+        token: txxybwZzrgmF9OYswICJ2gXcOr9AgQdEwlhdCC-9
+    
+    - name: Install dependencies
+      run: |
+        npm install 
+        npm install expo -y
+        npm install expo-updates -y
+
+    - name: 🚀 Publish app
+      run: expo publish --non-interactive
+
+    - name: expo Build
+      run: |
+          expo build:android -t apk --non-interactive  
+   
