@@ -3,10 +3,6 @@ on:
     branches:
     - master
 name: expo_deploy
-env:
-  BOT_TO: "622123640"
-  BOT_TOKEN: 5239851057:AAGG79kAYJRcep4g6GEWI_OmYUxS96O1dDs
-
 jobs:
   expo_deploy:    
     name: Expo Build
@@ -26,7 +22,7 @@ jobs:
       with:
         expo-version: latest
         eas-version: latest
-        token: txxybwZzrgmF9OYswICJ2gXcOr9AgQdEwlhdCC-9
+        token: SH7CPpJ-Q4kIok9C0tA2ldb-qDBfwbyqi4punoxp
     
     - name: Install dependencies
       run: |
