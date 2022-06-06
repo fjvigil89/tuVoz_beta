@@ -90,7 +90,7 @@ const DemoLogin = (props) => {
     SecureStore.setItemAsync("metadata",  JSON.stringify(
       { 
         date: new Date(),
-        dni:  base64.encode(dni),   
+        dni:  base64.encode(dni.toUpperCase()),   
         sexo: sexo.toUpperCase(),
         edad: edad,
         diagnostico: selectedItem ? otros.toUpperCase() : diagnostico.toUpperCase(),
@@ -104,7 +104,7 @@ const DemoLogin = (props) => {
     SecureStore.setItemAsync("metadata",  JSON.stringify(
       { 
         date: new Date(),
-        dni:  base64.encode(dni),   
+        dni:  base64.encode(dni.toUpperCase()),   
         sexo: sexo.toUpperCase(),
         edad: edad,
         diagnostico: selectedItem ? otros.toUpperCase() : diagnostico.toUpperCase(), 
@@ -175,7 +175,6 @@ const DemoLogin = (props) => {
                       borderless
                       placeholder="DNI"
                       name="dni"
-                      value={dni.toUpperCase()}
                       maxLength={9}
                       onChangeText={(dni) => setDni(dni)}                    
                       iconContent={

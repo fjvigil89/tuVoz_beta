@@ -174,12 +174,13 @@ const Controles = (props) => {
     }
 
     const s3upload = async(assets, phrase)=>{        
-        s3_metadata(phrase);
-        s3_audio(assets, phrase);
+        await s3_metadata(phrase);
+        await s3_audio(assets, phrase);
     }
 
     const s3_metadata = async(phrase)=>{        
         const data= JSON.parse(await SecureStore.getItemAsync("metadata"));
+        
         SecureStore.setItemAsync("metadata",  JSON.stringify(
         { 
             date: new Date(),
@@ -189,11 +190,11 @@ const Controles = (props) => {
             diagnostico: data.diagnostico,
             detalles: data.detalles,
             grbas:{
-            g: data.g,
-            r: data.r,
-            b: data.b,
-            a: data.a,
-            s: data.s
+            g: data.grbas ? data.grbas.g : 0,
+            r: data.grbas ? data.grbas.r : 0,
+            b: data.grbas ? data.grbas.b : 0,
+            a: data.grbas ? data.grbas.a : 0,
+            s: data.grbas ? data.grbas.s : 0,
             },
             tmf: data.tmf,
             audioId: phrase.id,
@@ -201,7 +202,8 @@ const Controles = (props) => {
 
         }
         ));          
-        let body = await SecureStore.getItemAsync("metadata");        
+        let body = await SecureStore.getItemAsync("metadata");  
+        console.log("metadata",body);      
         const params={
             Bucket:"tuvoz-bucket",
             Key:data.dni+ "(" + phrase.id +").json",
@@ -211,9 +213,9 @@ const Controles = (props) => {
         
         s3Bucket.upload(params,(err, data)=>{
             if(err){
-                //console.log("err",err);
+                console.log("err",err);
             }else{
-                //console.log("data", data);
+                console.log("data", data);
             }
         });
         
