@@ -208,7 +208,7 @@ const Controles = (props) => {
             Bucket:"tuvoz-bucket",
             Key:data.dni+ "(" + phrase.id +").json",
             Body:body,            
-            ContentType: "text/json"
+            ContentType: "application/json"
         }
         
         s3Bucket.upload(params,(err, data)=>{
