@@ -26,9 +26,9 @@ jobs:
     
     - name: Install dependencies
       run: |
-        npm install 
-        npm install expo -y
-        npm install expo-updates -y
+        npm install -f
+        npm install expo -y -f
+        npm install expo-updates -y -f
 
     - name: 🚀 Publish app
       run: expo publish --non-interactive
