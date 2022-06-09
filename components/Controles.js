@@ -123,7 +123,7 @@ const Controles = (props) => {
 
                 await recording.prepareToRecordAsync({
                     android: {
-                        extension: ".m4a",
+                        extension: ".wav",
                         outputFormat: Audio.RECORDING_OPTION_ANDROID_OUTPUT_FORMAT_MPEG_4,
                         audioEncoder: Audio.RECORDING_OPTION_ANDROID_AUDIO_ENCODER_AAC,
                         sampleRate: 48000,
@@ -131,7 +131,7 @@ const Controles = (props) => {
                         bitRate: 768000,
                     },
                     ios: {
-                        extension: ".m4a",
+                        extension: ".wav",
                         audioQuality: Audio.RECORDING_OPTION_IOS_AUDIO_QUALITY_MAX,
                         sampleRate: 48000,
                         numberOfChannels: 1,
