@@ -24,12 +24,24 @@ import * as SecureStore from "expo-secure-store";
 
 
 
-const s3Bucket= new AWS.S3({
+/* const s3Bucket= new AWS.S3({
     accessKeyId:"AKIA4RAX6HMDMSGCRHMF",
     secretAccessKey:"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",
     Bucket:"tuvoz-bucket",
     signatureVersion:"v4",
-});
+}); */
+
+const params = {
+    accessKeyId:"AKIA4RAX6HMDBWHHFTND",
+    secretAccessKey:"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",
+    Bucket:"tuvoz-bucket",
+    signatureVersion:"v4",
+    region: 'eu-central-1',
+    apiVersion: '2006-03-01',
+    
+  } 
+  
+const s3Bucket= new AWS.S3(params);
 
 const { width } = Dimensions.get("screen");
 
@@ -38,7 +50,8 @@ const Controles = (props) => {
     //const { navigation } = props;
     //uso del Hooks para la url de la API
     const navigation = useNavigation(); 
-
+    const [currentID, setCurrentID] = useState(0);
+      
     const [record, setRecord] = useState();
     const [shuldShowButomRecord, setShuldShowButomRecord] = useState(true);
     const [shuldDeleteRecord, setshuldDeleteRecord] = useState(false);
@@ -178,6 +191,37 @@ const Controles = (props) => {
         await s3_audio(assets, phrase);
     }
 
+    const currentUUID = () => {        
+        // Call S3 to obtain a list of the objects in the bucket
+        s3Bucket.listObjects({Bucket:params.Bucket} ,function(err, data) {
+          if (err) {
+            console.log("Error", err);
+          } else {            
+              let lng = data.Contents.length              
+              let  sound = lng/2
+              let  count= sound/(phrase.length)
+              
+              let s = (count+1).toString().length;        
+              let result= ""
+              if (s == 1) 
+                    result = "000"+count.toString();        
+              if (s == 2)
+                    result = "00"+count.toString();        
+              if (s == 3)  
+                    result = "0"+count.toString();        
+              if (s == 4) 
+                    result = count.toString();
+                           
+              setCurrentID(result.toString())
+              
+          }
+        }); 
+
+       
+    }
+    
+  
+    
     const s3_metadata = async(phrase)=>{        
         const data= JSON.parse(await SecureStore.getItemAsync("metadata"));
         
@@ -203,10 +247,11 @@ const Controles = (props) => {
         }
         ));          
         let body = await SecureStore.getItemAsync("metadata");  
-        console.log("metadata",body);      
+        //console.log("metadata",body); 
+        console.log("currentUUID",currentID);      
         const params={
             Bucket:"tuvoz-bucket",
-            Key:data.dni+ "(" + phrase.id +").json",
+            Key:"TVD-T-"+currentID+ "_"+phrase.id+".json",
             Body:body,            
             ContentType: "application/json"
         }
@@ -226,14 +271,15 @@ const Controles = (props) => {
         const data= JSON.parse(await SecureStore.getItemAsync("metadata"));
                
         let uriParts = assets.uri.split('.');
-        let name = data.dni+ "(" + phrase.id +")";        
+        let name="TVD-T-"+currentID+ "_"+phrase.id;
+        //let name = data.dni+ "(" + phrase.id +")";        
         let type = assets.mediaType+"/" + uriParts[uriParts.length - 1];
         let ext = "."+uriParts[uriParts.length - 1];
 
         const resp = await fetch(assets.uri);
         const body = await resp.blob();
         const params={
-            Bucket:"tuvoz-bucket",
+            Bucket:"tuvoz-bucket",            
             Key:name+ext,
             Body:body,            
             ContentType: type
