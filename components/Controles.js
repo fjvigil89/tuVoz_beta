@@ -53,6 +53,8 @@ const Controles = (props) => {
     const [currentID, setCurrentID] = useState(0);
       
     const [record, setRecord] = useState();
+    
+    const [isNewPatient, setIsNewPatient] = useState(true);
     const [shuldShowButomRecord, setShuldShowButomRecord] = useState(true);
     const [shuldDeleteRecord, setshuldDeleteRecord] = useState(false);
     const [startRecord, setstartRecord] = useState(false);
@@ -190,40 +192,42 @@ const Controles = (props) => {
         await s3_metadata(phrase);
         await s3_audio(assets, phrase);
     }
-
-    const currentUUID = () => {        
+    
+    const currentUUID = async() => {                
         // Call S3 to obtain a list of the objects in the bucket
         s3Bucket.listObjects({Bucket:params.Bucket} ,function(err, data) {
           if (err) {
             console.log("Error", err);
           } else {            
-              let lng = data.Contents.length              
-              let  sound = lng/2
-              let  count= sound/(phrase.length)
+              let lng = data.Contents.length               
+              let  sound = lng/2              
+              let  countUser= sound/(phrase.length)                            
+              let count = Math.ceil(countUser,1)+1 ;                           
               
-              let s = (count+1).toString().length;        
-              let result= ""
-              if (s == 1) 
-                    result = "000"+count.toString();        
-              if (s == 2)
-                    result = "00"+count.toString();        
-              if (s == 3)  
-                    result = "0"+count.toString();        
-              if (s == 4) 
-                    result = count.toString();
-                           
-              setCurrentID(result.toString())
+              if(isNewPatient){
+                    let result= ""
+                    let s = (count).toString().length;
+                    if (s == 1) 
+                            result = "000"+count.toString();        
+                    if (s == 2)
+                            result = "00"+count.toString();        
+                    if (s == 3)  
+                            result = "0"+count.toString();        
+                    if (s == 4) 
+                            result = count.toString();                    
+                    setCurrentID(result.toString())
+              }
+              
+              
               
           }
-        }); 
+        });        
+    }   
 
-       
-    }
-    
-  
-    
+
+
     const s3_metadata = async(phrase)=>{        
-        const data= JSON.parse(await SecureStore.getItemAsync("metadata"));
+        const data= JSON.parse(await SecureStore.getItemAsync("metadata"));        
         
         SecureStore.setItemAsync("metadata",  JSON.stringify(
         { 
@@ -336,8 +340,8 @@ const Controles = (props) => {
     
     const [current, setCurrent] = useState(phrase[0]);
    
-    const handleNextPhrase = async () => {
-    
+    const handleNextPhrase = async () => {   
+        setIsNewPatient(false)//Hacemos que no se repita el código del paciente      
         const aux = phrase.map((item, index) => {                                        
             if (item.id === current.id) {                
                 setCurrent(phrase[index + 1]);
@@ -345,6 +349,11 @@ const Controles = (props) => {
             return phrase[index + 1];
         });
     };
+    
+    useEffect(()=>{
+        currentUUID()
+      },[]);
+
 
     return current ? (
         <Block flex space="between" style={styles.padded}>

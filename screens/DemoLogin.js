@@ -97,6 +97,8 @@ const DemoLogin = (props) => {
         detalles: detalles.toUpperCase()         
       }
     )); 
+
+    
     navigation.navigate("Elements"); 
    };
   const goDemo = async()=>{
@@ -110,21 +112,21 @@ const DemoLogin = (props) => {
         diagnostico: selectedItem ? otros.toUpperCase() : diagnostico.toUpperCase(), 
         detalles: detalles.toUpperCase(),    
       }
-    ));            
-     
+    ));
+      
     navigation.navigate("Demo");   
   }
 
-  const handleDiagnostico = (item) => {        
+  const handleDiagnostico = async(item) => {        
     setDiagnostico(item);
     setSelectedItem(false); 
     if (item === "Otros...") {
       setSelectedItem(true); 
-    }
+    }    
     
   }
 
-  useEffect(()=>{                            
+  useEffect(()=>{
     //document.getElementById("input1").value = "";
   },[]);
 
@@ -283,7 +285,8 @@ const DemoLogin = (props) => {
                 <Block middle>
                   <View style={styles.createButton}>
                     {_renderButton('Siguiente', () =>
-                      setVisibleModal(1)
+                      setVisibleModal(1),
+                      SecureStore.setItemAsync("isNewPatient",  JSON.stringify(false)),                      
                     )}
                     <Modal isVisible={visibleModal === 1}>
                       {_renderModalContent()}
