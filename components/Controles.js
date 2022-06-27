@@ -256,7 +256,7 @@ const Controles = (props) => {
         console.log("currentUUID",currentID);      
         const params={
             Bucket:"tuvoz-bucket",
-            Key:name,
+            Key:name+".json",
             Body:body,            
             ContentType: "application/json"
         }
