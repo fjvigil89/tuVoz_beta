@@ -228,9 +228,10 @@ const Controles = (props) => {
 
     const s3_metadata = async(phrase)=>{        
         const data= JSON.parse(await SecureStore.getItemAsync("metadata"));        
-        
+        let name="TVD-T-"+currentID+ "_"+phrase.id;
         SecureStore.setItemAsync("metadata",  JSON.stringify(
         { 
+            name: name,
             date: new Date(),
             dni:  data.dni,   
             sexo: data.sexo,
@@ -255,7 +256,7 @@ const Controles = (props) => {
         console.log("currentUUID",currentID);      
         const params={
             Bucket:"tuvoz-bucket",
-            Key:"TVD-T-"+currentID+ "_"+phrase.id+".json",
+            Key:name,
             Body:body,            
             ContentType: "application/json"
         }
